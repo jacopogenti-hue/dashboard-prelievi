@@ -123,12 +123,20 @@ header{margin-bottom:18px;}
 .theme-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
 .theme-toggle:active{transform:translateY(0);}
 
+/* Barra comandi: evita sovrapposizioni quando sono presenti nomi lunghi online. */
+.header-toolbar{position:fixed;top:18px;right:18px;z-index:50;display:flex;align-items:center;justify-content:flex-end;gap:8px;max-width:calc(100vw - 36px)}
+.header-toolbar>.theme-toggle,.header-toolbar>.online-toggle,.header-toolbar>.log-toggle,.header-toolbar>.backup-toggle,.header-toolbar>.notif-toggle,.header-toolbar>.stats-toggle,.header-toolbar>.users-toggle,.header-toolbar>.logout-toggle{position:static;top:auto;right:auto;bottom:auto;left:auto;flex-shrink:0}
+.header-toolbar>.online-toggle{max-width:min(280px,34vw)}
+.logout-toggle{height:42px;padding:0 14px;border-radius:12px;display:flex;align-items:center;gap:7px;background:var(--panel);color:var(--text);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);font-size:13.5px;font-weight:650;cursor:pointer;user-select:none;transition:all .15s ease}
+.logout-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08)}
+
 .share-toggle{
   position:fixed;top:18px;right:333px;z-index:50;
   height:42px;padding:0 15px;border-radius:12px;display:flex;align-items:center;gap:7px;
   background:var(--accent);color:#fff;border:none;box-shadow:0 1px 2px rgba(0,0,0,.12);
   font-size:13.5px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s ease;
 }
+.share-toggle,.share-menu{display:none!important;}
 .share-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,113,227,.35);background:var(--accent-hover);}
 .share-toggle:active{transform:translateY(0);}
 .users-toggle{
@@ -758,6 +766,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
   .online-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:100px;}
   .share-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:18px;}
 }
+@media(max-width:840px){.header-toolbar{top:12px;right:12px;gap:6px;max-width:calc(100vw - 24px);flex-wrap:wrap}.header-toolbar>.online-toggle{max-width:calc(100vw - 150px)}.header-toolbar>.users-toggle span:last-child{display:none}.header-toolbar>.users-toggle{width:42px;padding:0;justify-content:center}.header-toolbar>.logout-toggle{width:42px;padding:0;justify-content:center;font-size:0}.header-toolbar>.logout-toggle span{font-size:18px}.wrap{padding-top:82px}}
 @media(max-width:680px){.users-grid,.user-row{grid-template-columns:1fr 1fr}.users-grid .users-action,.user-row .users-action{width:100%}.users-panel{padding:16px}}
 @media(hover:none){
   .stat:hover, #dropzone:hover, #empty .big-dz:hover{transform:none;}
@@ -766,12 +775,13 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
 </head>
 <body>
 <div id="auth-gate" style="min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#052c56,#0071e3 58%,#1a91ff)"><form id="login-form" style="width:min(420px,100%);padding:38px;border-radius:22px;background:#fff;box-shadow:0 18px 50px #001a3880"><div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0071e3">Magazzino U005</div><h1 style="margin:10px 0 6px;font-size:30px">Accedi</h1><p style="margin:0 0 26px;color:#6e6e73">Gestionale Prelievi · area riservata</p><label style="display:block;font-size:13px;font-weight:700;margin-bottom:7px">Utente</label><input id="login-username" required autocomplete="username" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="es. jacopo"><label style="display:block;font-size:13px;font-weight:700;margin:18px 0 7px">PIN personale</label><input id="login-pin" required inputmode="numeric" minlength="6" type="password" autocomplete="current-password" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="••••••••"><button style="width:100%;height:48px;margin-top:24px;border:0;border-radius:10px;background:#0071e3;color:#fff;font-weight:700;font-size:15px">Accedi al gestionale →</button><p id="login-error" style="min-height:18px;margin:14px 0 0;color:#d84a4a;font-size:13px"></p></form></div>
-<div class="users-modal" id="users-modal" aria-hidden="true"><div class="users-panel" role="dialog" aria-modal="true" aria-labelledby="users-title"><div class="users-head"><div><h2 id="users-title">Gestione utenti</h2><p>Account e permessi del gestionale Magazzino U005.</p></div><button class="users-close" id="users-close" aria-label="Chiudi">×</button></div><form class="users-create" id="users-create"><h3>Nuovo utente</h3><div class="users-grid"><input name="display_name" required maxlength="80" placeholder="Nome visualizzato"><input name="username" required pattern="[A-Za-z0-9._-]{3,32}" placeholder="utente (es. mario)"><select name="role"><option value="operatore">Operatore</option><option value="senior">Senior</option><option value="admin">Admin</option></select><input name="pin" required inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" type="password" placeholder="PIN 6-12 cifre"><button class="users-action">Crea</button></div></form><div class="users-list-title">Utenti esistenti</div><div id="users-list"></div><p class="users-error" id="users-error"></p><p class="users-note">Admin: controllo completo · Senior: modifica Prelievi e Produzione · Operatore: modifica solo Produzione.</p></div></div>
+<div class="users-modal" id="users-modal" aria-hidden="true"><div class="users-panel" role="dialog" aria-modal="true" aria-labelledby="users-title"><div class="users-head"><div><h2 id="users-title">Gestione utenti</h2><p>Account e permessi del gestionale Magazzino U005.</p></div><button class="users-close" id="users-close" aria-label="Chiudi">×</button></div><form class="users-create" id="users-create"><h3>Nuovo utente</h3><div class="users-grid"><input name="display_name" required maxlength="80" placeholder="Nome visualizzato"><input name="username" required pattern="[A-Za-z0-9._-]{3,32}" placeholder="utente (es. mario)"><select name="role"><option value="operatore">Operatore</option><option value="lettura">Lettura</option><option value="senior">Senior</option><option value="admin">Admin</option></select><input name="pin" required inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" type="password" placeholder="PIN 6-12 cifre"><button class="users-action">Crea</button></div></form><div class="users-list-title">Utenti esistenti</div><div id="users-list"></div><p class="users-error" id="users-error"></p><p class="users-note">Admin: controllo completo · Senior: modifica Prelievi e Produzione · Operatore: modifica solo Produzione · Lettura: visualizza solo Produzione.</p></div></div>
 <div class="wrap" id="wrap" style="display:none">
 
   <header>
     <div class="title-block">
       <h1 id="main-title">Dashboard Prelievi <span class="tag" id="today-tag"></span></h1>
+      <div class="header-toolbar">
       <span class="theme-toggle" id="theme-toggle" title="Cambia tema chiaro/scuro">
         <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="#fff3b0" stroke="#e5c651" stroke-width="1"/></svg>
       </span>
@@ -793,6 +803,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
         <svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="12" width="4" height="8" rx="1" fill="#34c759"/><rect x="10" y="7" width="4" height="13" rx="1" fill="#0071e3"/><rect x="16" y="4" width="4" height="16" rx="1" fill="#ff3b30"/></svg>
       </div>
       <div class="users-toggle" id="users-toggle" title="Gestione utenti"><span>👥</span><span>Utenti</span></div>
+      <button class="logout-toggle" id="logout-toggle" type="button" title="Esci dall'account"><span>Esci</span></button>
       <div class="share-toggle" id="share-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92 0-1.61-1.31-2.92-2.92-2.92z"/></svg>
         <span class="share-toggle-label">Condividi</span>
@@ -812,6 +823,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
         </div>
       </div>
       <div class="readonly-badge">🔒 Sola lettura</div>
+      </div>
       <p id="main-subtitle">Priorità di prelievo per commessa (telaio + allestimento), basata su "Inizio schedulato"</p>
       <div class="file-name" id="file-name"></div>
     </div>
@@ -974,6 +986,9 @@ function getSupabase(){
   return _supabaseClient;
 }
 function isOperatore(){ return APP_PROFILE && APP_PROFILE.role === 'operatore'; }
+function isLettura(){ return APP_PROFILE && APP_PROFILE.role === 'lettura'; }
+function isProduzioneSolo(){ return isOperatore() || isLettura(); }
+function isReadOnlyAccess(){ return READONLY || isLettura(); }
 const storage = window.storage ? window.storage : {
   async get(key, shared){
     const sb = getSupabase();
@@ -1021,7 +1036,7 @@ let lastUploadAt = null;
 let filtersPopulated = false;
 async function loadLastRaw(){
   try{
-    const r = await storage.get(isOperatore() ? 'produzione-export' : 'ultimo-export', EXPORT_SHARED);
+    const r = await storage.get(isProduzioneSolo() ? 'produzione-export' : 'ultimo-export', EXPORT_SHARED);
     if(r && r.value){
       const parsed = JSON.parse(r.value);
       RAW = parsed.rows || [];
@@ -1091,7 +1106,7 @@ async function logAzione(azione, dettaglio){
 }
 
 function setFase(commessaKey, fase){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   // il collaudo ora è una fase visibile come le altre: l'archiviazione la fai tu manualmente
   const prev = PRODSTATO[commessaKey] || {};
   PRODSTATO[commessaKey] = { ...prev, fase, archiviata: false };
@@ -1100,21 +1115,21 @@ function setFase(commessaKey, fase){
   render();
 }
 function archivia(commessaKey){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), archiviata: true, archivedAt: Date.now() };
   saveProdStato();
   logAzione('Archiviazione', `Commessa ${commessaKey} completata e archiviata`);
   render();
 }
 function ripristina(commessaKey){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), archiviata: false };
   saveProdStato();
   logAzione('Ripristino', `Commessa ${commessaKey} ripristinata dall'archivio`);
   render();
 }
 async function eliminaCommessa(commessaKey){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   if(!confirm('Eliminare definitivamente la commessa ' + commessaKey + '? Non si può annullare.')) return;
   delete PRODSTATO[commessaKey];
   delete MANUAL[commessaKey];
@@ -1124,7 +1139,7 @@ async function eliminaCommessa(commessaKey){
   render();
 }
 async function eliminaDaPrelievi(commessaKey){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   if(!confirm('Eliminare la commessa ' + commessaKey + ' da Prelievi? Non ricomparirà più, nemmeno ricaricando un file Excel che la contiene ancora.')) return;
   PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), eliminataPrelievi: true };
   await saveProdStato();
@@ -1132,7 +1147,7 @@ async function eliminaDaPrelievi(commessaKey){
   render();
 }
 function setArrivo(commessaKey, campo, checked){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   const prev = PRODSTATO[commessaKey] || {};
   const arrivi = { ...(prev.arrivi||{}) };
   arrivi[campo] = checked ? { checked:true, at: Date.now() } : { checked:false, at:null };
@@ -1242,7 +1257,7 @@ function fmtDateTime(ts){
 }
 
 async function handleFile(file){
-  if(READONLY || isOperatore()){ alert('Non sei autorizzato a caricare file Excel.'); return; }
+  if(isReadOnlyAccess() || isProduzioneSolo()){ alert('Non sei autorizzato a caricare file Excel.'); return; }
   const reader = new FileReader();
   reader.onload = async e => {
     const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
@@ -1724,7 +1739,7 @@ async function loadColonnaColori(){
   }catch(e){ /* nessun colore personalizzato salvato */ }
 }
 async function salvaColonnaColore(fase, colore){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   COLONNA_COLORI[fase] = colore;
   try{ await storage.set('colonna-colori', JSON.stringify(COLONNA_COLORI), PRODSTATO_SHARED); }catch(e){}
   render();
@@ -1761,7 +1776,7 @@ async function getNomeUtente(){
 }
 
 async function toggleFlag(key){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   const prev = PRODSTATO[key] || {};
   const nuovo = !prev.flag;
   PRODSTATO[key] = { ...prev, flag: nuovo };
@@ -1770,7 +1785,7 @@ async function toggleFlag(key){
   render();
 }
 async function salvaNota(key, testo){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   const nome = await getNomeUtente();
   const prev = PRODSTATO[key] || {};
   PRODSTATO[key] = { ...prev, nota: { testo, autore: nome, at: Date.now() } };
@@ -2076,10 +2091,10 @@ function closeAddPanel(){
   document.getElementById('add-pct-telaio').value = 0;
   document.getElementById('add-pct-finitura').value = 0;
 }
-document.getElementById('add-btn-produzione').addEventListener('click', () => { if(!READONLY) openAddPanel(); });
+document.getElementById('add-btn-produzione').addEventListener('click', () => { if(!isReadOnlyAccess()) openAddPanel(); });
 document.getElementById('add-cancel').addEventListener('click', closeAddPanel);
 document.getElementById('add-save').addEventListener('click', async () => {
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   const key = document.getElementById('add-key').value.trim();
   if(!key){ alert('Inserisci una chiave commessa.'); return; }
   MANUAL[key] = {
@@ -2166,7 +2181,7 @@ if(READONLY){
   document.getElementById('share-normal').style.display = 'none';
 }
 function escHtml(value){ return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function ruoloOptions(value){ return ['admin','senior','operatore'].map(r => `<option value="${r}" ${r===value?'selected':''}>${r[0].toUpperCase()+r.slice(1)}</option>`).join(''); }
+function ruoloOptions(value){ return ['admin','senior','operatore','lettura'].map(r => `<option value="${r}" ${r===value?'selected':''}>${r[0].toUpperCase()+r.slice(1)}</option>`).join(''); }
 async function utentiApi(body){
   const { data, error } = await getSupabase().functions.invoke('manage-users', { body });
   if(error) throw error;
@@ -2215,13 +2230,14 @@ async function avviaSessione(){
   if(profile.role === 'admin') document.getElementById('users-toggle').style.display = 'flex';
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('wrap').style.display = '';
-  if(isOperatore()){
+  if(isProduzioneSolo()){
     currentView = 'produzione';
     document.getElementById('tab-prelievi').style.display = 'none';
     document.getElementById('dropzone').style.display = 'none';
     document.getElementById('share-toggle').style.display = 'none';
     document.getElementById('backup-toggle').style.display = 'none';
   }
+  if(isLettura()) document.documentElement.classList.add('is-readonly');
   await applyViewVisibility();
 }
 document.getElementById('login-form').addEventListener('submit', async e => {
@@ -2232,6 +2248,12 @@ document.getElementById('login-form').addEventListener('submit', async e => {
   const { error } = await getSupabase().auth.signInWithPassword({ email: username + '@u005.local', password: pin });
   if(error){ err.textContent = 'Credenziali non valide.'; return; }
   await avviaSessione();
+});
+document.getElementById('logout-toggle').addEventListener('click', async () => {
+  const button = document.getElementById('logout-toggle');
+  button.disabled = true;
+  try{ await getSupabase().auth.signOut(); }
+  finally{ APP_PROFILE = null; location.reload(); }
 });
 avviaSessione();
 
@@ -2320,7 +2342,7 @@ function renderGiroBanner(){
   }
 }
 async function iniziaGiroMancanti(){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   let nome = '';
   while(!nome){
     nome = (prompt('Chi sta facendo il giro mancanti?') || '').trim();
@@ -2331,7 +2353,7 @@ async function iniziaGiroMancanti(){
   renderGiroBanner();
 }
 async function terminaGiroMancanti(){
-  if(READONLY) return;
+  if(isReadOnlyAccess()) return;
   const chi = GIRO_MANCANTI ? GIRO_MANCANTI.da : '';
   GIRO_MANCANTI = null;
   try{ await storage.set('giro-mancanti', '', PRODSTATO_SHARED); }catch(e){}
