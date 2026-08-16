@@ -1,0 +1,2514 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard Prelievi</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Prelievi">
+<meta name="theme-color" content="#0071e3">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230a84ff'/%3E%3Cstop offset='1' stop-color='%230058b3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='url(%23bg)'/%3E%3Crect x='34' y='40' width='112' height='10' rx='4' fill='white'/%3E%3Crect x='34' y='85' width='112' height='10' rx='4' fill='white'/%3E%3Crect x='34' y='130' width='112' height='10' rx='4' fill='white'/%3E%3Crect x='46' y='53' width='20' height='24' rx='3' fill='white'/%3E%3Crect x='72' y='53' width='20' height='24' rx='3' fill='%23a9cdfb'/%3E%3Crect x='98' y='53' width='20' height='24' rx='3' fill='white'/%3E%3Crect x='46' y='98' width='20' height='24' rx='3' fill='%23a9cdfb'/%3E%3Crect x='72' y='98' width='20' height='24' rx='3' fill='white'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='bg2' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%230a84ff'/%3E%3Cstop offset='1' stop-color='%230058b3'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='url(%23bg2)'/%3E%3Crect x='19' y='22' width='62' height='6' rx='2' fill='white'/%3E%3Crect x='19' y='47' width='62' height='6' rx='2' fill='white'/%3E%3Crect x='19' y='72' width='62' height='6' rx='2' fill='white'/%3E%3Crect x='26' y='29' width='11' height='13' rx='2' fill='white'/%3E%3Crect x='40' y='29' width='11' height='13' rx='2' fill='%23a9cdfb'/%3E%3Crect x='54' y='29' width='11' height='13' rx='2' fill='white'/%3E%3Crect x='26' y='54' width='11' height='13' rx='2' fill='%23a9cdfb'/%3E%3Crect x='40' y='54' width='11' height='13' rx='2' fill='white'/%3E%3C/svg%3E">
+<link rel="manifest" href="data:application/manifest+json,{%22name%22:%22Dashboard%20Prelievi%22,%22short_name%22:%22Prelievi%22,%22display%22:%22standalone%22,%22start_url%22:%22.%22,%22theme_color%22:%22%230071e3%22,%22background_color%22:%22%23f5f5f7%22}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+
+  --bg:#f5f5f7;
+  --panel:#ffffff;
+  --panel-2:#fafafa;
+  --panel-3:#f2f2f4;
+  --line:#e5e5ea;
+  --text:#1d1d1f;
+  --text-dim:#86868b;
+
+  --accent:#0071e3;
+  --accent-hover:#0066cc;
+  --accent-bg:rgba(0,113,227,.1);
+
+  --scaduto:#d84a4a;      --scaduto-bg:#fbeceb;
+  --in-produzione:#0071e3; --in-produzione-bg:rgba(0,113,227,.1);
+  --urgente:#ff9500;      --urgente-bg:#fff2e2;
+  --prossimo:#b8860b;     --prossimo-bg:#fff8dd;
+  --pianificato:#8e8e93;  --pianificato-bg:#f2f2f7;
+  --completo:#248a3d;     --completo-bg:#e5f7ea;
+
+  --shadow-sm:0 1px 2px rgba(0,0,0,.04), 0 1px 1px rgba(0,0,0,.03);
+  --shadow-md:0 2px 10px rgba(0,0,0,.06);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.10);
+}
+
+html.dark{
+  --bg:#000000;
+  --panel:#1c1c1e;
+  --panel-2:#242426;
+  --panel-3:#2c2c2e;
+  --line:#38383a;
+  --text:#f5f5f7;
+  --text-dim:#98989d;
+
+  --accent:#0a84ff;
+  --accent-hover:#409cff;
+  --accent-bg:rgba(10,132,255,.18);
+
+  --scaduto:#ff453a;      --scaduto-bg:rgba(255,69,58,.16);
+  --in-produzione:#0a84ff; --in-produzione-bg:rgba(10,132,255,.18);
+  --urgente:#ff9f0a;      --urgente-bg:rgba(255,159,10,.16);
+  --prossimo:#e8b923;     --prossimo-bg:rgba(255,214,10,.14);
+  --pianificato:#98989d;  --pianificato-bg:rgba(152,152,157,.16);
+  --completo:#30d158;     --completo-bg:rgba(48,209,88,.16);
+
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3), 0 1px 1px rgba(0,0,0,.2);
+  --shadow-md:0 2px 12px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 32px rgba(0,0,0,.5);
+}
+html.dark body{
+  background:
+    radial-gradient(1100px circle at 12% -8%, rgba(10,132,255,.10), transparent 55%),
+    radial-gradient(900px circle at 105% 0%, rgba(255,159,10,.07), transparent 50%),
+    radial-gradient(1000px circle at 45% 105%, rgba(48,209,88,.06), transparent 48%),
+    var(--bg);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{overscroll-behavior-y:contain;}
+body{
+  margin:0;
+  background:
+    radial-gradient(1100px circle at 12% -8%, rgba(0,113,227,.12), transparent 55%),
+    radial-gradient(900px circle at 105% 0%, rgba(255,149,0,.09), transparent 50%),
+    radial-gradient(1000px circle at 45% 105%, rgba(52,199,89,.07), transparent 48%),
+    var(--bg);
+  background-attachment:fixed;
+  color:var(--text);
+  font-family:var(--font-sans);
+  min-height:100vh;
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  font-size:16px;
+  overscroll-behavior-y:contain;
+  touch-action:pan-y;
+}
+.wrap{
+  max-width:1400px;margin:0 auto;
+  padding:calc(22px + env(safe-area-inset-top)) 16px calc(80px + env(safe-area-inset-bottom));
+  padding-left:calc(16px + env(safe-area-inset-left));
+  padding-right:calc(16px + env(safe-area-inset-right));
+}
+.wrap.wrap-produzione{max-width:1900px;}
+.wrap.kanban-compact{padding-bottom:calc(16px + env(safe-area-inset-bottom));}
+
+/* HEADER */
+header{margin-bottom:18px;}
+.title-block h1{
+  font-size:29px;margin:0 0 6px;font-weight:600;letter-spacing:-0.021em;
+  display:flex;align-items:center;gap:11px;flex-wrap:wrap;
+}
+.title-block .tag{
+  font-family:var(--font-mono);font-size:12.5px;letter-spacing:0.02em;
+  color:var(--accent);background:var(--accent-bg);padding:4px 10px;border-radius:7px;font-weight:600;
+}
+.title-block p{margin:0 0 12px;color:var(--text-dim);font-size:15.5px;letter-spacing:-0.006em;}
+
+.theme-toggle{
+  position:fixed;top:18px;right:18px;z-index:50;
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;user-select:none;transition:transform .15s ease, box-shadow .15s ease;
+}
+.theme-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.theme-toggle:active{transform:translateY(0);}
+
+.share-toggle{
+  position:fixed;top:18px;right:333px;z-index:50;
+  height:42px;padding:0 15px;border-radius:12px;display:flex;align-items:center;gap:7px;
+  background:var(--accent);color:#fff;border:none;box-shadow:0 1px 2px rgba(0,0,0,.12);
+  font-size:13.5px;font-weight:600;cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.share-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,113,227,.35);background:var(--accent-hover);}
+.share-toggle:active{transform:translateY(0);}
+
+.backup-toggle{
+  position:fixed;top:18px;right:210px;z-index:50;
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.backup-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.backup-toggle:active{transform:translateY(0);}
+
+.notif-toggle{
+  position:fixed;top:18px;right:162px;z-index:50;
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.notif-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.notif-toggle:active{transform:translateY(0);}
+.notif-toggle.on{background:var(--accent-bg);border-color:var(--accent);}
+
+.stats-toggle{
+  position:fixed;top:18px;right:114px;z-index:50;
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.stats-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.stats-toggle:active{transform:translateY(0);}
+
+.stats-overlay{
+  display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.35);
+  align-items:center;justify-content:center;padding:20px;
+}
+.stats-overlay.open{display:flex;}
+.stats-panel{
+  width:100%;max-width:680px;max-height:85vh;overflow-y:auto;
+  background:var(--panel);border-radius:20px;box-shadow:var(--shadow-lg);
+}
+.stats-panel-head{
+  position:sticky;top:0;background:var(--panel);z-index:1;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px;border-bottom:1px solid var(--line);
+}
+.stats-panel-head h3{margin:0;font-size:18px;font-weight:700;}
+.stats-close{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-dim);transition:all .15s ease;}
+.stats-close:hover{background:var(--panel-3);color:var(--text);}
+.stats-body{padding:20px 22px 26px;}
+.stats-section{margin-bottom:26px;}
+.stats-section:last-child{margin-bottom:0;}
+.stats-section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);margin-bottom:12px;}
+.stats-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13.5px;}
+.stats-bar-label{width:96px;flex-shrink:0;color:var(--text-dim);font-family:var(--font-mono);font-size:12.5px;}
+.stats-bar-track{flex:1;height:20px;background:var(--panel-2);border-radius:6px;overflow:hidden;}
+.stats-bar-fill{height:100%;border-radius:6px;background:var(--accent);transition:width .3s ease;min-width:2px;}
+.stats-bar-value{width:28px;text-align:right;font-weight:700;font-family:var(--font-mono);flex-shrink:0;}
+.stats-empty{color:var(--text-dim);font-size:13px;padding:6px 0;}
+.stats-summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;}
+.stats-summary-card{background:var(--panel-2);border-radius:14px;padding:14px 16px;}
+.stats-summary-card .n{font-family:var(--font-mono);font-size:24px;font-weight:700;color:var(--accent);}
+.stats-summary-card .l{font-size:12px;color:var(--text-dim);margin-top:2px;}
+
+.online-toggle{
+  position:fixed;top:18px;right:258px;z-index:50;
+  height:42px;padding:0 13px;border-radius:12px;display:flex;align-items:center;gap:7px;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.online-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.online-dot-pulse{
+  width:8px;height:8px;border-radius:50%;background:var(--completo);
+  box-shadow:0 0 0 2px rgba(52,199,89,.22);
+}
+.online-menu{
+  position:fixed;top:62px;right:258px;z-index:51;display:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);
+  padding:10px;min-width:180px;max-height:260px;overflow-y:auto;
+}
+.online-menu.open{display:block;}
+.online-menu-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);margin-bottom:8px;}
+.online-person{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13.5px;color:var(--text);}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--completo);flex-shrink:0;}
+
+.log-toggle{
+  position:fixed;top:18px;right:66px;z-index:50;
+  width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
+  cursor:pointer;user-select:none;transition:all .15s ease;
+}
+.log-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.log-menu{
+  position:fixed;top:62px;right:18px;z-index:51;display:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);
+  padding:12px;width:340px;max-width:calc(100vw - 36px);max-height:400px;overflow-y:auto;
+}
+.log-menu.open{display:block;}
+.log-menu-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);margin-bottom:10px;}
+.log-entry{padding:9px 0;border-bottom:1px solid var(--line);}
+.log-entry:last-child{border-bottom:none;}
+.log-entry .le-top{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--text-dim);margin-bottom:2px;}
+.log-entry .le-autore{font-weight:700;color:var(--accent);}
+.log-entry .le-dettaglio{font-size:13px;color:var(--text);}
+.log-empty{color:var(--text-dim);font-size:13px;text-align:center;padding:16px 0;}
+
+.share-menu{
+  position:fixed;top:62px;right:18px;z-index:51;display:none;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);
+  padding:8px;min-width:230px;
+}
+.share-menu.open{display:block;}
+.share-option{
+  display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s ease;
+}
+.share-option:hover{background:var(--panel-2);}
+.share-option .so-title{font-size:14px;font-weight:600;color:var(--text);}
+.share-option .so-sub{font-size:12px;color:var(--text-dim);}
+.share-option.copied .so-title{color:var(--completo);}
+
+.readonly-badge{
+  display:none;margin:8px 0 4px;
+  background:var(--pianificato-bg);color:var(--pianificato);font-size:12.5px;font-weight:600;
+  padding:7px 14px;border-radius:980px;align-items:center;gap:6px;box-shadow:var(--shadow-sm);
+  width:fit-content;
+}
+html.is-readonly .readonly-badge{display:flex;}
+html.is-readonly .sposta-btn, html.is-readonly .kmove-btn, html.is-readonly .karrivo-btn,
+html.is-readonly .flag-btn, html.is-readonly #add-btn-produzione,
+html.is-readonly .archivia-btn, html.is-readonly .ripristina-btn, html.is-readonly .knota-save,
+html.is-readonly .knota-text, html.is-readonly #dropzone, html.is-readonly #big-dz, html.is-readonly .kcol-color-input,
+html.is-readonly .giro-start-btn, html.is-readonly .giro-end-btn{
+  pointer-events:none;opacity:.5;cursor:not-allowed;
+}
+
+.file-name{
+  display:inline-flex;align-items:center;gap:5px;float:right;
+  font-family:var(--font-mono);color:var(--text-dim);font-size:11px;
+  background:var(--panel-3);border-radius:980px;padding:3px 10px 3px 8px;
+}
+.file-name:empty{display:none;}
+.file-name::before{content:"📄";font-size:9.5px;}
+
+#dropzone{
+  margin-top:12px;border:1px solid var(--line);border-radius:14px;padding:14px 18px;
+  display:none;align-items:center;gap:12px;cursor:pointer;background:var(--panel);
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s ease, transform .15s ease;
+}
+#dropzone:hover, #dropzone.drag{box-shadow:var(--shadow-md);transform:translateY(-1px);}
+#dropzone svg{flex-shrink:0;}
+#dropzone .dz-text{font-size:14.5px;color:var(--text-dim);line-height:1.4;}
+#dropzone .dz-text b{color:var(--text);}
+#file-input{display:none;}
+
+/* EMPTY STATE */
+#empty{margin-top:50px;text-align:center;color:var(--text-dim);}
+#empty .big-dz{
+  max-width:460px;margin:0 auto;padding:48px 28px;border:1px solid var(--line);border-radius:20px;
+  cursor:pointer;background:var(--panel);box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s ease, transform .15s ease;
+}
+#empty .big-dz:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+#empty h2{color:var(--text);font-size:20px;font-weight:600;margin:16px 0 7px;letter-spacing:-0.012em;}
+.empty-lead{max-width:440px;margin:0 auto 22px;font-size:16px;font-weight:590;color:var(--text);letter-spacing:-0.01em;}
+.empty-icon{
+  width:64px;height:64px;margin:0 auto;border-radius:18px;background:var(--accent-bg);
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.empty-shortcut{
+  margin-top:20px;font-size:13.5px;color:var(--text-dim);cursor:pointer;transition:color .15s ease;
+}
+.empty-shortcut:hover{color:var(--accent);}
+.empty-shortcut b{color:var(--accent);font-weight:600;}
+#empty p{font-size:14.5px;line-height:1.6;margin:0;}
+
+/* STAT CHIPS */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin:18px 0;}
+.stat{
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px 16px;
+  cursor:pointer;transition:transform .15s ease, box-shadow .15s ease;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.stat:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.stat.active{box-shadow:0 0 0 2px var(--stat-color), var(--shadow-sm);}
+.stat::before{
+  content:"";position:absolute;left:14px;top:14px;width:8px;height:8px;border-radius:50%;
+  background:var(--stat-color);
+}
+.stat .n{font-family:var(--font-mono);font-size:24px;font-weight:600;color:var(--text);margin-top:16px;letter-spacing:-0.02em;}
+.stat .l{font-size:12px;color:var(--text-dim);letter-spacing:-0.006em;margin-top:2px;}
+
+/* TOOLBAR */
+.toolbar{display:flex;gap:9px;align-items:center;margin-bottom:11px;flex-wrap:wrap;}
+.toolbar input[type=text]{
+  flex:1;min-width:180px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 13px;color:var(--text);font-family:var(--font-sans);font-size:15px;
+  transition:background .15s ease, box-shadow .15s ease;
+}
+.toolbar input[type=text]:focus{outline:none;background:var(--panel);box-shadow:0 0 0 4px var(--accent-bg);}
+.toolbar input[type=text]::placeholder{color:var(--text-dim);}
+.toolbar select{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:10px;color:var(--text);
+  padding:10px 11px;font-size:14.5px;font-family:var(--font-sans);
+}
+.toggle-completate{
+  display:flex;align-items:center;gap:7px;font-size:14px;color:var(--text-dim);cursor:pointer;user-select:none;
+}
+.toggle-completate input{accent-color:var(--accent);width:16px;height:16px;}
+
+.add-btn{
+  font-size:14px;font-weight:590;padding:9px 16px;border-radius:980px;cursor:pointer;user-select:none;
+  border:none;color:var(--accent);background:var(--accent-bg);transition:all .15s ease;white-space:nowrap;
+}
+.add-btn:hover{background:var(--accent);color:#fff;}
+.add-btn:active{transform:scale(.96);}
+.giro-start-btn{color:var(--urgente);background:var(--urgente-bg);}
+.giro-start-btn:hover{background:var(--urgente);color:#fff;}
+
+.giro-banner{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--urgente-bg);border:1px solid var(--urgente);border-radius:14px;
+  padding:13px 16px;margin-bottom:16px;
+}
+.giro-pulse{
+  width:9px;height:9px;border-radius:50%;background:var(--urgente);flex-shrink:0;
+  animation:giro-pulse 1.4s infinite;
+}
+@keyframes giro-pulse{
+  0%{box-shadow:0 0 0 0 var(--urgente-bg);}
+  70%{box-shadow:0 0 0 8px rgba(255,149,0,0);}
+  100%{box-shadow:0 0 0 0 rgba(255,149,0,0);}
+}
+.giro-txt{font-size:14px;color:var(--urgente);font-weight:600;flex:1;min-width:200px;}
+.giro-txt b{font-weight:700;}
+.giro-end-btn{
+  background:var(--scaduto);color:#fff;border:none;border-radius:980px;
+  padding:8px 15px;font-size:12.5px;font-weight:700;cursor:pointer;flex-shrink:0;user-select:none;transition:all .15s ease;
+}
+.giro-end-btn:hover{opacity:.88;}
+.giro-end-btn:active{transform:scale(.96);}
+
+.add-panel{
+  display:none;background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:18px;margin-bottom:15px;box-shadow:var(--shadow-md);
+}
+.add-panel.open{display:block;}
+.add-panel h4{margin:0 0 12px;font-size:16px;font-weight:600;letter-spacing:-0.012em;}
+.add-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:12px;}
+.add-grid label{display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:var(--text-dim);font-weight:590;}
+.add-grid input, .add-grid select{
+  background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:8px 10px;
+  color:var(--text);font-family:var(--font-sans);font-size:14px;
+}
+.add-actions{display:flex;gap:8px;}
+.add-save{
+  font-size:14px;font-weight:590;padding:9px 20px;border-radius:980px;cursor:pointer;border:none;
+  background:var(--accent);color:#fff;transition:all .15s ease;
+}
+.add-save:hover{background:var(--accent-hover);}
+.add-save:active{transform:scale(.96);}
+.add-cancel{
+  font-size:14px;font-weight:590;padding:9px 18px;border-radius:980px;cursor:pointer;
+  border:none;background:var(--panel-3);color:var(--text-dim);transition:all .15s ease;
+}
+.add-cancel:hover{background:var(--line);}
+
+.fase-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px;}
+.fase-chip{
+  font-size:13.5px;font-weight:590;padding:7px 15px;border-radius:980px;cursor:pointer;user-select:none;
+  border:none;color:var(--text-dim);background:var(--panel-3);transition:all .15s ease;
+}
+.fase-chip.on{color:#fff;background:var(--accent);}
+.fase-chip:active{transform:scale(.96);}
+
+/* CARD LIST - livello Commessa */
+.card-list{display:flex;flex-direction:column;gap:11px;}
+.commessa{
+  background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:var(--shadow-sm);transition:box-shadow .2s ease;
+}
+.commessa-head{padding:16px 18px;cursor:pointer;}
+.commessa-head:hover{background:var(--panel-2);}
+
+.ch-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:3px;flex-wrap:wrap;}
+.ch-odp{display:flex;align-items:baseline;gap:8px;}
+.ch-odp .lbl{font-size:13px;font-weight:590;letter-spacing:.02em;color:var(--text-dim);text-transform:uppercase;}
+.ch-odp .num{font-family:var(--font-mono);font-weight:700;font-size:23px;letter-spacing:-0.01em;}
+.due-pill{
+  font-family:var(--font-mono);font-size:15.5px;font-weight:600;
+  padding:5px 13px;border-radius:980px;white-space:nowrap;
+  color:var(--row-color);background:var(--row-color-bg);
+}
+.chev{color:var(--text-dim);transition:transform .2s ease;font-size:15px;flex-shrink:0;}
+.commessa.open > .commessa-head .chev{transform:rotate(90deg);}
+
+.ch-material{font-size:16px;color:var(--text-dim);margin:7px 0 9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.006em;}
+.ch-material .cod{font-family:var(--font-mono);color:var(--text);font-weight:500;}
+
+.ch-dates{display:flex;gap:16px;flex-wrap:wrap;font-size:15px;color:var(--text-dim);margin-bottom:12px;}
+.ch-dates b{color:var(--text);font-family:var(--font-mono);font-weight:600;}
+
+.ch-progress-row{display:flex;align-items:center;gap:11px;}
+.ch-progress-row .bar-track{flex:1;height:8px;background:var(--panel-3);border-radius:980px;overflow:hidden;}
+.ch-progress-row .bar-fill{display:block;height:100%;background:var(--row-color);border-radius:980px;transition:width .3s ease;}
+.ch-progress-row .pct{font-family:var(--font-mono);font-size:17px;font-weight:700;color:var(--row-color);min-width:52px;text-align:right;}
+.ch-progress-row .opn{font-size:15px;color:var(--text-dim);white-space:nowrap;}
+
+/* Livello ODP (dentro la commessa) */
+.odp-list{display:none;border-top:1px solid var(--line);background:var(--panel-2);padding:9px;}
+.commessa.open > .odp-list{display:flex;flex-direction:column;gap:9px;}
+.odp-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);}
+.odp-head{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:11px;flex-wrap:wrap;}
+.odp-head:hover{background:var(--panel-2);}
+.odp-fase-tag{
+  font-size:13px;font-weight:590;text-transform:uppercase;letter-spacing:.02em;
+  padding:4px 10px;border-radius:980px;background:var(--panel-3);color:var(--text-dim);flex-shrink:0;
+  cursor:pointer;transition:all .15s ease;user-select:none;
+}
+.odp-fase-tag:hover{background:var(--line);}
+.odp-fase-tag.stato-giallo{background:#ffcc00;color:#5c4400;}
+.odp-fase-tag.stato-giallo:hover{background:#f2c200;}
+.odp-fase-tag.stato-arancio{background:#ff9500;color:#fff;}
+.odp-fase-tag.stato-arancio:hover{background:#e08600;}
+.odp-fase-tag.stato-verde{background:var(--completo);color:#fff;}
+.odp-fase-tag.stato-verde:hover{background:#1f7a35;}
+.odp-num{font-family:var(--font-mono);font-weight:600;font-size:17px;flex-shrink:0;}
+.odp-copy-btn{
+  font-size:13px;line-height:1;padding:4px 7px;border-radius:8px;cursor:pointer;flex-shrink:0;
+  border:none;background:var(--panel-3);color:var(--text-dim);font-family:var(--font-sans);
+  transition:all .15s ease;
+}
+.odp-copy-btn:hover{background:var(--accent);color:#fff;}
+.odp-copy-btn.copied{background:var(--completo);color:#fff;}
+.odp-div{font-size:14.5px;color:var(--text-dim);font-family:var(--font-mono);flex-shrink:0;}
+.odp-mini-bar{flex:1;height:6px;background:var(--panel-3);border-radius:980px;overflow:hidden;min-width:50px;}
+.odp-mini-bar span{display:block;height:100%;background:var(--row-color);}
+.odp-pct{font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--row-color);width:44px;text-align:right;flex-shrink:0;}
+.odp-date-abs{font-family:var(--font-mono);font-size:12px;color:var(--text-dim);flex-shrink:0;}
+.odp-due{font-family:var(--font-mono);font-size:14.5px;font-weight:500;padding:4px 11px;border-radius:980px;color:var(--row-color);background:var(--row-color-bg);white-space:nowrap;flex-shrink:0;}
+.odp-chev{color:var(--text-dim);font-size:12px;transition:transform .2s ease;flex-shrink:0;}
+.odp-card.open .odp-chev{transform:rotate(90deg);}
+
+.op-table{display:none;border-top:1px solid var(--line);overflow-x:auto;}
+.odp-card.open .op-table{display:block;}
+table.ops{width:100%;border-collapse:collapse;}
+table.ops th{
+  text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--text-dim);
+  padding:9px 14px;font-weight:590;border-bottom:1px solid var(--line);background:var(--panel-2);white-space:nowrap;
+}
+table.ops td{padding:10px 14px;font-size:14px;border-bottom:1px solid var(--line);color:var(--text);white-space:nowrap;}
+table.ops tr:last-child td{border-bottom:none;}
+table.ops td.mono{font-family:var(--font-mono);color:var(--text-dim);font-size:13px;}
+.pill{
+  display:inline-block;padding:3px 10px;border-radius:980px;font-size:12.5px;font-weight:500;
+  background:var(--row-color-bg);color:var(--row-color);
+}
+
+.no-results{text-align:center;padding:55px 20px;color:var(--text-dim);font-size:15px;}
+footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;font-family:var(--font-mono);}
+
+/* BANNER "cosa è cambiato" */
+#update-banner{
+  background:var(--accent-bg);border-radius:16px;padding:14px 16px;margin-bottom:16px;
+}
+.ub-head{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;}
+.ub-summary{font-size:14px;font-weight:590;color:var(--accent);letter-spacing:-0.006em;}
+.ub-toggle{font-size:12.5px;font-weight:590;color:var(--accent);white-space:nowrap;}
+.ub-details{display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,113,227,.15);}
+#update-banner.open .ub-details{display:block;}
+.ub-group{margin-bottom:10px;}
+.ub-group:last-child{margin-bottom:0;}
+.ub-group-title{font-size:11.5px;font-weight:590;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);margin-bottom:6px;}
+.ub-row{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:4px 0;color:var(--text);}
+.ub-row .mono{font-family:var(--font-mono);font-weight:600;}
+.ub-row .arrow{color:var(--text-dim);}
+.ub-dismiss{
+  font-size:12.5px;font-weight:590;color:var(--text-dim);cursor:pointer;background:var(--panel);
+  border-radius:980px;padding:5px 13px;margin-top:12px;display:inline-block;
+}
+.ub-dismiss:hover{background:var(--panel-3);}
+
+/* TABS - segmented control in stile iOS/macOS */
+.tabbar{
+  display:inline-flex;gap:2px;padding:3px;margin-bottom:22px;
+  background:var(--panel-3);border-radius:11px;
+  position:sticky;top:12px;z-index:20;
+}
+.tab-btn{
+  padding:7px 20px;margin-right:0;font-size:14px;font-weight:590;color:var(--text-dim);
+  cursor:pointer;border-bottom:none;border-radius:8px;user-select:none;
+  transition:background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{
+  color:var(--text);background:var(--panel);
+  box-shadow:0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.06);
+}
+
+/* KANBAN */
+.kanban{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:820px){ .kanban{grid-template-columns:repeat(4,1fr);} }
+.kanban-col{background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:13px;min-height:120px;}
+
+.viewmode-toggle{display:inline-flex;gap:2px;padding:3px;background:var(--panel-3);border-radius:11px;flex-shrink:0;}
+.viewmode-opt{
+  padding:8px 13px;font-size:13px;font-weight:590;color:var(--text-dim);border-radius:8px;cursor:pointer;
+  white-space:nowrap;user-select:none;transition:all .15s ease;
+}
+.viewmode-opt.active{background:var(--panel);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12);}
+
+/* modalità "Compatta": ogni colonna scorre da sola, con altezza fissa */
+.kanban.modo-colonna{align-items:start;}
+.kanban.modo-colonna .kanban-col{
+  height:calc(100vh - 200px);min-height:360px;
+  display:flex;flex-direction:column;
+}
+.kanban.modo-colonna .kanban-col-head{flex-shrink:0;}
+.kanban.modo-colonna .kanban-col-scroll{flex:1;overflow-y:auto;padding-right:4px;}
+.kanban.modo-colonna .kanban-col-scroll::-webkit-scrollbar{width:6px;}
+.kanban.modo-colonna .kanban-col-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:10px;}
+.kanban-col-head{
+  display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:0 2px 11px;
+  border-bottom:3px solid var(--kcol-a,var(--line));
+}
+.kanban-col-head-left{display:flex;align-items:center;gap:9px;}
+.kanban-col-head h3{margin:0;font-size:19px;font-weight:700;letter-spacing:-0.015em;color:var(--text);}
+.kanban-col-head .kcount{
+  font-family:var(--font-mono);font-size:13px;font-weight:700;color:var(--kcol-a,var(--text-dim));
+}
+.kcol-color-input{
+  -webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;
+  border:2px solid var(--panel);box-shadow:0 0 0 1.5px var(--line);padding:0;cursor:pointer;flex-shrink:0;
+  background:var(--kcol-a);
+}
+.kcol-color-input::-webkit-color-swatch-wrapper{padding:0;}
+.kcol-color-input::-webkit-color-swatch{border:none;border-radius:50%;}
+.kanban-col-empty{color:var(--text-dim);font-size:13px;text-align:center;padding:26px 14px;}
+.kcard{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:14px;padding:15px 16px 0;margin-bottom:12px;box-shadow:var(--shadow-md);
+  transition:box-shadow .15s ease, transform .15s ease;overflow:hidden;
+}
+.kcard:hover{box-shadow:var(--shadow-lg);transform:translateY(-1px);}
+.kcard:last-child{margin-bottom:0;}
+.kcard-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px;cursor:pointer;flex-wrap:wrap;}
+.kcard-key{font-family:var(--font-mono);font-weight:600;font-size:19px;}
+.kchev{color:var(--text-dim);font-size:11px;transition:transform .2s ease;flex-shrink:0;}
+.kcard.open .kchev{transform:rotate(90deg);}
+.kcard-fam{font-size:15px;color:var(--text-dim);margin-bottom:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.kcard-progress{
+  padding:0 4px 6px;margin-top:12px;
+}
+.kcard-progress-pct{
+  font-size:10.5px;font-family:var(--font-mono);font-weight:700;
+  color:var(--text-dim);text-align:right;margin-bottom:3px;
+  line-height:1;
+}
+.kcard-progress-pct.completo{color:var(--completo);}
+.kcard-progress-bar{
+  height:4px;background:var(--panel-3);border-radius:4px;overflow:hidden;
+}
+.kcard-progress-fill{
+  height:100%;transition:width .4s ease;border-radius:4px;
+}
+.kcard-progress-fill.parziale{background:#ffcc00;}
+.kcard-progress-fill.completo{background:var(--completo);}
+.kcard-moves{display:flex;gap:6px;flex-wrap:wrap;}
+.kmove-btn{
+  font-size:12px;font-weight:590;padding:5px 12px;border-radius:980px;cursor:pointer;user-select:none;
+  border:none;color:var(--text-dim);background:var(--panel-3);transition:all .15s ease;
+}
+.kmove-btn:hover{background:var(--accent);color:#fff;}
+.kmove-btn.archivia{color:var(--completo);background:var(--completo-bg);}
+.kmove-btn.archivia:hover{background:var(--completo);color:#fff;}
+.kmove-btn.elimina{color:var(--scaduto);background:var(--scaduto-bg);display:none;}
+.kcard.open .kmove-btn.elimina{display:inline-block;}
+.kmove-btn.elimina:hover{background:var(--scaduto);color:#fff;}
+.ripristina-btn.elimina{color:var(--scaduto);}
+.ripristina-btn.elimina:hover{background:var(--scaduto);color:#fff;border-color:var(--scaduto);}
+.kmove-btn:active{transform:scale(.96);}
+
+.kcard-odps{display:none;flex-direction:column;gap:7px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+.kcard.open .kcard-odps{display:flex;}
+
+/* riga pallini compatta (arrivi + fase), sempre visibile */
+.dot-row{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px;}
+.dot-item{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:590;color:var(--text-dim);letter-spacing:.02em;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--line);flex-shrink:0;}
+.dot.on{background:var(--completo);}
+.dot.stato-giallo{background:#ffcc00;}
+.dot.stato-arancio{background:#ff9500;}
+.dot.stato-verde{background:var(--completo);}
+.dot-sep{color:var(--line);font-size:11px;margin:0 1px;}
+
+/* flag urgente */
+.flag-btn{font-size:22px;cursor:pointer;color:var(--line);transition:all .15s ease;flex-shrink:0;}
+.pausa-badge{
+  font-size:12px;font-weight:700;color:#fff;background:#ff9500;
+  padding:4px 10px;border-radius:980px;white-space:nowrap;flex-shrink:0;
+}
+.flag-btn:hover{color:var(--text-dim);}
+.flag-btn.on{color:var(--scaduto);}
+.urgente-pill{
+  display:inline-block;font-size:11px;font-weight:700;letter-spacing:.03em;
+  color:var(--scaduto);background:var(--scaduto-bg);padding:3px 10px;border-radius:980px;margin-bottom:8px;
+}
+
+/* nota con firma */
+.knota-wrap{margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+.knota-toggle{font-size:13px;font-weight:590;color:var(--text-dim);cursor:pointer;}
+.knota-toggle:hover{color:var(--text);}
+.knota-box{display:none;flex-direction:column;gap:8px;margin-top:9px;}
+.kcard.open .knota-box{display:flex;}
+.knota-text{
+  width:100%;min-height:60px;border-radius:12px;border:1px solid var(--line);background:var(--panel-2);
+  padding:9px 11px;font-family:var(--font-sans);font-size:13.5px;color:var(--text);resize:vertical;
+}
+.knota-text:focus{outline:none;box-shadow:0 0 0 3px var(--accent-bg);}
+.knota-actions{display:flex;gap:8px;align-items:center;}
+.knota-save{
+  align-self:flex-start;font-size:12.5px;font-weight:590;padding:6px 14px;border-radius:980px;cursor:pointer;
+  background:var(--accent);color:#fff;transition:all .15s ease;
+}
+.knota-save:hover{background:var(--accent-hover);}
+.knota-signature{font-size:11.5px;color:var(--text-dim);font-style:italic;}
+.kcard-odps-title{font-size:11px;font-weight:590;text-transform:uppercase;letter-spacing:.03em;color:var(--text-dim);margin-bottom:2px;}
+.kodp-row{display:flex;flex-direction:column;gap:8px;background:var(--panel-2);border-radius:12px;padding:10px 12px;}
+.kodp-top{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.kodp-bottom{display:flex;align-items:center;gap:10px;}
+.kodp-bottom .odp-mini-bar{flex:1;}
+.copy-btn{
+  width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:13px;color:var(--text-dim);background:var(--panel-3);cursor:pointer;flex-shrink:0;
+  transition:all .15s ease;
+}
+.copy-btn:hover{background:var(--accent);color:#fff;}
+.copy-btn.copied{background:var(--completo);color:#fff;}
+
+.karrivi{display:none;flex-direction:column;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+.kcard.open .karrivi{display:flex;}
+.karrivo-btn{
+  display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:590;cursor:pointer;
+  padding:9px 12px;border-radius:12px;background:var(--panel-3);color:var(--text-dim);
+  transition:background .15s ease, color .15s ease;flex-wrap:wrap;
+}
+.karrivo-btn:hover{background:var(--line);}
+.karrivo-btn.on{background:var(--completo);color:#fff;}
+.karrivo-check-icon{
+  width:18px;height:18px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.25);font-size:12px;font-weight:700;
+}
+.karrivo-btn:not(.on) .karrivo-check-icon{background:var(--panel);border:1.5px solid var(--line);}
+.karrivo-label{font-weight:590;flex:1;}
+.karrivo-ts{font-family:var(--font-mono);font-size:14px;font-weight:600;white-space:nowrap;opacity:.95;flex-shrink:0;}
+
+/* controlli fase produzione + archivia, dentro la commessa */
+.prod-controls{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 18px;
+  border-top:1px solid var(--line);background:var(--panel-2);
+}
+.sposta-btn{
+  font-size:15.5px;font-weight:600;padding:10px 18px;border-radius:980px;cursor:pointer;user-select:none;
+  border:none;color:var(--accent);background:var(--accent-bg);transition:all .15s ease;
+}
+.sposta-btn:hover{background:var(--accent);color:#fff;}
+.sposta-btn:active{transform:scale(.96);}
+.sposta-btn.elimina{color:var(--scaduto);background:var(--scaduto-bg);}
+.sposta-btn.elimina:hover{background:var(--scaduto);color:#fff;}
+
+.archiviate-title{font-size:14px;font-weight:590;color:var(--text-dim);margin:26px 0 10px;text-transform:uppercase;letter-spacing:.04em;}
+.ripristina-btn{
+  font-size:12.5px;font-weight:590;padding:5px 13px;border-radius:980px;cursor:pointer;
+  border:none;color:var(--text-dim);background:var(--panel-3);transition:all .15s ease;
+}
+.ripristina-btn:hover{background:var(--accent);color:#fff;}
+/* MOBILE / TABLET: touch target più grandi, layout impilato */
+@media(max-width:640px){
+  .wrap{padding-top:16px;}
+  .title-block h1{font-size:24px;}
+  .title-block .tag{font-size:11px;}
+  .tabbar{width:100%;}
+  .tab-btn{flex:1;text-align:center;padding:9px 10px;}
+  .toolbar{flex-direction:column;align-items:stretch;}
+  .toolbar input[type=text], .toolbar select{width:100%;}
+  .toggle-completate{padding:4px 0;}
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .stat{padding:12px;}
+  .copy-btn{width:34px;height:34px;font-size:15px;}
+  .flag-btn{font-size:24px;padding:2px;}
+  .kmove-btn, .karrivo-btn, .fase-chip, .add-btn, .sposta-btn, .ripristina-btn{padding-top:9px;padding-bottom:9px;}
+  .ub-head{flex-wrap:wrap;}
+  table.ops{font-size:13px;}
+
+  /* card più compatte su schermo stretto: meno probabilità che titolo/badge vadano a capo o si tocchino */
+  .ch-odp .num{font-size:19px;}
+  .kcard-key{font-size:18px;}
+  .due-pill, .odp-due{font-size:13px;padding:4px 10px;}
+  .ch-material, .kcard-fam{white-space:normal;}
+  .kodp-top .odp-num{font-size:15px;}
+  .prod-controls, .kcard-moves{gap:6px;}
+
+  /* i pulsanti fissi in alto si sovrappongono al titolo/barra di stato su schermi stretti:
+     su mobile li spostiamo in basso, come un tasto flottante */
+  .theme-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:18px;}
+  .log-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:66px;}
+  .log-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:18px;}
+  .stats-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:114px;}
+  .share-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:162px;width:42px;padding:0;justify-content:center;}
+  .share-toggle-label{display:none;}
+  .backup-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:210px;}
+  .notif-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:258px;}
+  .online-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:306px;}
+  .online-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:100px;}
+  .share-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:18px;}
+}
+@media(hover:none){
+  .stat:hover, #dropzone:hover, #empty .big-dz:hover{transform:none;}
+}
+</style>
+</head>
+<body>
+<div id="auth-gate" style="min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#052c56,#0071e3 58%,#1a91ff)"><form id="login-form" style="width:min(420px,100%);padding:38px;border-radius:22px;background:#fff;box-shadow:0 18px 50px #001a3880"><div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0071e3">Magazzino U005</div><h1 style="margin:10px 0 6px;font-size:30px">Accedi</h1><p style="margin:0 0 26px;color:#6e6e73">Gestionale Prelievi · area riservata</p><label style="display:block;font-size:13px;font-weight:700;margin-bottom:7px">Utente</label><input id="login-username" required autocomplete="username" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="es. jacopo"><label style="display:block;font-size:13px;font-weight:700;margin:18px 0 7px">PIN personale</label><input id="login-pin" required inputmode="numeric" minlength="6" type="password" autocomplete="current-password" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="••••••••"><button style="width:100%;height:48px;margin-top:24px;border:0;border-radius:10px;background:#0071e3;color:#fff;font-weight:700;font-size:15px">Accedi al gestionale →</button><p id="login-error" style="min-height:18px;margin:14px 0 0;color:#d84a4a;font-size:13px"></p></form></div>
+<div class="wrap" id="wrap" style="display:none">
+
+  <header>
+    <div class="title-block">
+      <h1 id="main-title">Dashboard Prelievi <span class="tag" id="today-tag"></span></h1>
+      <span class="theme-toggle" id="theme-toggle" title="Cambia tema chiaro/scuro">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="#fff3b0" stroke="#e5c651" stroke-width="1"/></svg>
+      </span>
+      <div class="online-toggle" id="online-toggle" style="display:none;">
+        <span class="online-dot-pulse"></span><span id="online-count">1</span>
+      </div>
+      <div class="online-menu" id="online-menu"></div>
+      <div class="log-toggle" id="log-toggle" title="Registro modifiche">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="4" width="16" height="18" rx="2" fill="#ffffff" stroke="#c7c7cc" stroke-width="1.2"/><rect x="8" y="2" width="8" height="4" rx="1.5" fill="#8e8e93"/><line x1="7" y1="10" x2="17" y2="10" stroke="#c7c7cc" stroke-width="1.2"/><line x1="7" y1="14" x2="17" y2="14" stroke="#c7c7cc" stroke-width="1.2"/><line x1="7" y1="18" x2="14" y2="18" stroke="#c7c7cc" stroke-width="1.2"/></svg>
+      </div>
+      <div class="log-menu" id="log-menu"></div>
+      <div class="backup-toggle" id="backup-toggle" title="Scarica backup dei dati">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 15v4a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-4h-6l-2 2h-4l-2-2H3z" fill="#8e8e93"/><path d="M11 3h2v8h3l-4 5-4-5h3z" fill="#ff3b30"/></svg>
+      </div>
+      <div class="notif-toggle" id="notif-toggle" title="Attiva notifiche per commesse scadute/urgenti">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-4-5.66V4a2 2 0 0 0-4 0v1.34A6 6 0 0 0 6 11v5l-2 2v1h16v-1z" fill="#f5b800"/><path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z" fill="#c78f00"/></svg>
+      </div>
+      <div class="stats-toggle" id="stats-toggle" title="Statistiche e andamento">
+        <svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="12" width="4" height="8" rx="1" fill="#34c759"/><rect x="10" y="7" width="4" height="13" rx="1" fill="#0071e3"/><rect x="16" y="4" width="4" height="16" rx="1" fill="#ff3b30"/></svg>
+      </div>
+      <div class="share-toggle" id="share-toggle">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92 0-1.61-1.31-2.92-2.92-2.92z"/></svg>
+        <span class="share-toggle-label">Condividi</span>
+      </div>
+      <div class="share-menu" id="share-menu">
+        <div class="share-option" id="share-normal">
+          <span class="so-title">Link normale</span>
+          <span class="so-sub">Chi lo apre può modificare Produzione</span>
+        </div>
+        <div class="share-option" id="share-readonly">
+          <span class="so-title">Link sola lettura</span>
+          <span class="so-sub">Chi lo apre può solo guardare (Prelievi + Produzione)</span>
+        </div>
+        <div class="share-option" id="share-readonly-produzione">
+          <span class="so-title">Link sola lettura Produzione</span>
+          <span class="so-sub">Chi lo apre vede solo Produzione, in sola lettura</span>
+        </div>
+      </div>
+      <div class="readonly-badge">🔒 Sola lettura</div>
+      <p id="main-subtitle">Priorità di prelievo per commessa (telaio + allestimento), basata su "Inizio schedulato"</p>
+      <div class="file-name" id="file-name"></div>
+    </div>
+    <div id="dropzone">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#70747E" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="dz-text"><b>Carica nuovo export</b> · trascina il file .xlsx o clicca qui</div>
+    </div>
+  </header>
+  <input type="file" id="file-input" accept=".xlsx,.xls">
+
+  <div class="giro-banner" id="giro-banner" style="display:none;">
+    <span class="giro-pulse"></span>
+    <span class="giro-txt" id="giro-txt"></span>
+    <div class="giro-end-btn" id="giro-end-btn">Termina giro</div>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <div class="tab-btn active" id="tab-prelievi" data-view="prelievi">Prelievi</div>
+    <div class="tab-btn" id="tab-produzione" data-view="produzione">Produzione</div>
+  </div>
+
+  <div id="empty">
+    <p class="empty-lead">Carica l'ultimo export e in pochi secondi sai esattamente cosa prelevare oggi.</p>
+    <div class="big-dz" id="big-dz">
+      <div class="empty-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M7 3.5h7l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5A1.5 1.5 0 0 1 7 3.5z"/>
+          <path d="M14 3.5V8h4"/>
+          <path d="M9 12.5h6"/>
+          <path d="M9 15.5h4"/>
+          <circle cx="17.5" cy="17" r="4" fill="var(--completo)" stroke="none"/>
+          <path d="M15.8 17l1 1 2-2" stroke="#fff" stroke-width="1.6"/>
+        </svg>
+      </div>
+      <h2>Carica l'export prelievi</h2>
+      <p>Trascina qui il file .xlsx (colonne: Ordine, Materiale, Inizio schedulato, % Prelievo...) oppure clicca per selezionarlo.</p>
+    </div>
+    <div class="empty-shortcut" id="empty-shortcut">Oppure vai direttamente a <b>Produzione</b> →</div>
+  </div>
+
+  <div id="content" style="display:none;">
+    <div id="view-prelievi">
+      <div id="update-banner" style="display:none;"></div>
+      <div class="stats" id="stats"></div>
+
+      <div class="toolbar">
+        <input type="text" id="search" placeholder="Cerca commessa, ODP, materiale...">
+        <select id="divisione-filter"><option value="">Tutte le divisioni</option></select>
+        <select id="centro-filter"><option value="">Tutti i centri di lavoro</option></select>
+        <label class="toggle-completate">
+          <input type="checkbox" id="show-completate"> mostra completate
+        </label>
+        <label class="toggle-completate">
+          <input type="checkbox" id="show-archiviate"> mostra archiviate
+        </label>
+      </div>
+      <div class="fase-chips" id="fase-chips"></div>
+
+      <div class="card-list" id="card-list"></div>
+      <div class="no-results" id="no-results" style="display:none;">Nessuna commessa corrisponde ai filtri selezionati.</div>
+
+      <div id="archiviate-wrap" style="display:none;">
+        <div class="archiviate-title">Archiviate</div>
+        <div class="card-list" id="archiviate-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-produzione" style="display:none;">
+    <div class="toolbar">
+      <input type="text" id="produzione-search" placeholder="Cerca commessa o ODP...">
+      <div class="viewmode-toggle" id="viewmode-toggle">
+        <div class="viewmode-opt" data-mode="colonna">📐 Compatta</div>
+        <div class="viewmode-opt" data-mode="pagina">📜 Scorrimento libero</div>
+      </div>
+      <div class="add-btn giro-start-btn" id="giro-start-btn">🔍 Inizia giro mancanti</div>
+      <div class="add-btn" id="add-btn-produzione">+ Nuova commessa (diretta in produzione)</div>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </div>
+
+  <div class="stats-overlay" id="stats-overlay">
+    <div class="stats-panel">
+      <div class="stats-panel-head">
+        <h3>📊 Statistiche e andamento</h3>
+        <div class="stats-close" id="stats-close">✕</div>
+      </div>
+      <div class="stats-body" id="stats-body"></div>
+    </div>
+  </div>
+
+  <div class="add-panel" id="add-panel">
+    <h4>Nuova commessa manuale</h4>
+    <div class="add-grid">
+      <label>Chiave commessa<input type="text" id="add-key" placeholder="es. 26177"></label>
+      <label>Famiglia / descrizione<input type="text" id="add-famiglia" placeholder="es. COMBI INOX"></label>
+      <label>Divisione<input type="text" id="add-divisione" placeholder="es. U005"></label>
+      <label id="add-fase-wrap" style="display:none;">Fase iniziale in produzione
+        <select id="add-fase-iniziale">
+          <option value="buffer">Da Prelevare</option>
+          <option value="telaio">Telaio</option>
+          <option value="finitura">Finitura</option>
+        </select>
+      </label>
+    </div>
+    <div class="add-grid">
+      <label>ODP Telaio<input type="text" id="add-odp-telaio" placeholder="es. 1009959"></label>
+      <label>Data prelievo Telaio<input type="date" id="add-data-telaio"></label>
+      <label>% prelievo Telaio<input type="number" id="add-pct-telaio" min="0" max="100" value="0"></label>
+    </div>
+    <div class="add-grid">
+      <label>ODP Finitura<input type="text" id="add-odp-finitura" placeholder="es. 1010025"></label>
+      <label>Data prelievo Finitura<input type="date" id="add-data-finitura"></label>
+      <label>% prelievo Finitura<input type="number" id="add-pct-finitura" min="0" max="100" value="0"></label>
+    </div>
+    <div class="add-actions">
+      <button class="add-save" id="add-save">Salva commessa</button>
+      <div class="add-cancel" id="add-cancel">Annulla</div>
+    </div>
+  </div>
+
+  <footer>dashboard-prelievi · generata localmente nel browser, nessun dato inviato altrove</footer>
+</div>
+
+<script>
+// modalità sola lettura e vista forzata: attive se il link contiene ?readonly=1 e/o ?only=produzione
+const READONLY = new URLSearchParams(location.search).get('readonly') === '1';
+const ONLY_VIEW = new URLSearchParams(location.search).get('only'); // es. 'produzione': nasconde il tab Prelievi
+
+const COL = {
+  ordine:'Ordine', materiale:'Materiale', descrizione:'Descrizione materiale',
+  inizio:'Inizio schedulato', pct:'% Prelievo', statoEwm:'Stato prelievo EWM',
+  statoDataC:'Stato Prelievo a DataC.', operazione:'Operazione', opTesto:'Operazione testo breve',
+  centro:'Centro di lavoro', divisione:'Divisione'
+};
+
+// --- livello di compatibilità storage ---
+// Dentro Claude.ai usa window.storage (nativo). Fuori da Claude (es. ospitata su Cloudflare Pages)
+// non esiste: in quel caso salva su Supabase al suo posto.
+// Incolla URL e chiave anon dopo aver creato il progetto Supabase (vedi README-deploy.md) — se li
+// lasci vuoti e apri il file fuori da Claude, l'app funziona ma senza salvataggio persistente.
+const SUPABASE_URL = 'https://qqzdwaiptgtjcdenhhra.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable__DdesD8hCHHbuiv0ELnZVA_HOazhwJD';
+
+function getClientId(){
+  let id = localStorage.getItem('dp-client-id');
+  if(!id){
+    id = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+    localStorage.setItem('dp-client-id', id);
+  }
+  return id;
+}
+let _supabaseClient = null;
+let APP_PROFILE = null;
+function getSupabase(){
+  if(_supabaseClient) return _supabaseClient;
+  if(window.supabase && SUPABASE_URL && SUPABASE_ANON_KEY){
+    _supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+  return _supabaseClient;
+}
+function isOperatore(){ return APP_PROFILE && APP_PROFILE.role === 'operatore'; }
+const storage = window.storage ? window.storage : {
+  async get(key, shared){
+    const sb = getSupabase();
+    if(!sb) throw new Error('storage non configurato');
+    const client = shared ? '' : getClientId();
+    const { data, error } = await sb.from('storage_kv').select('value')
+      .eq('key', key).eq('shared', !!shared).eq('client_id', client).maybeSingle();
+    if(error || !data) throw new Error('chiave non trovata');
+    return { key, value: data.value, shared: !!shared };
+  },
+  async set(key, value, shared){
+    const sb = getSupabase();
+    if(!sb) return null;
+    const client = shared ? '' : getClientId();
+    const { error } = await sb.from('storage_kv').upsert(
+      { key, shared: !!shared, client_id: client, value, updated_at: new Date().toISOString() },
+      { onConflict: 'key,shared,client_id' }
+    );
+    if(error){ console.warn('Salvataggio non autorizzato', error.message); return null; }
+    return { key, value, shared: !!shared };
+  }
+};
+
+let RAW = [];
+let activeBucket = null;
+let currentView = (ONLY_VIEW === 'produzione') ? 'produzione' : 'prelievi';
+let activeFasi = new Set();
+let fasiInitialized = false;
+const DEFAULT_FASI = ['Telaio finito','Allestimento finito'];
+
+// stato manuale di produzione: { [commessaKey]: { fase, archiviata, archivedAt, arrivi:{telaio,basamento,cisterna} } }
+let PRODSTATO = {};
+let prodStatoLoaded = false;
+const PRODSTATO_SHARED = true;  // Produzione (fasi, arrivi, archiviazione, commesse dirette in produzione): condivisa con i colleghi
+const EXPORT_SHARED = true;     // Prelievi (export Excel caricato): ora condiviso, stesso file su tutti i dispositivi/colleghi
+
+// commesse create a mano (non da Excel): { [chiave]: { famiglia, divisione, telaioData, telaioPct, finituraData, finituraPct } }
+let MANUAL = {};
+let manualLoaded = false;
+
+// ultimo export Excel caricato: salvato per ritrovarlo riaprendo il link, senza dover ricaricare il file
+let rawLoaded = false;
+let lastFileName = '';
+let lastUploadAt = null;
+let filtersPopulated = false;
+async function loadLastRaw(){
+  try{
+    const r = await storage.get(isOperatore() ? 'produzione-export' : 'ultimo-export', EXPORT_SHARED);
+    if(r && r.value){
+      const parsed = JSON.parse(r.value);
+      RAW = parsed.rows || [];
+      lastFileName = parsed.fileName || '';
+      lastUploadAt = parsed.uploadedAt || null;
+    }
+  }catch(e){ /* nessun export salvato in precedenza */ }
+  rawLoaded = true;
+}
+async function saveLastRaw(fileName){
+  lastUploadAt = Date.now();
+  try{
+    await storage.set('ultimo-export', JSON.stringify({ fileName, rows: RAW, uploadedAt: lastUploadAt }), EXPORT_SHARED);
+    const produzioneRows = RAW.map(row => {
+      const commessa = extractCommessaKey(row[COL.materiale]);
+      return {
+        [COL.ordine]: row[COL.ordine], [COL.materiale]: 'S' + commessa + '000',
+        [COL.descrizione]: row[COL.descrizione], [COL.inizio]: row[COL.inizio],
+        [COL.pct]: row[COL.pct], [COL.statoEwm]: row[COL.statoEwm], [COL.statoDataC]: row[COL.statoDataC],
+        [COL.operazione]: row[COL.operazione], [COL.opTesto]: row[COL.opTesto], [COL.centro]: row[COL.centro], [COL.divisione]: row[COL.divisione]
+      };
+    });
+    await storage.set('produzione-export', JSON.stringify({ fileName, rows: produzioneRows, uploadedAt: lastUploadAt }), EXPORT_SHARED);
+  }catch(e){ /* storage non disponibile */ }
+}
+
+async function loadProdStato(){
+  try{
+    const r = await storage.get('produzione-stato', PRODSTATO_SHARED);
+    if(r && r.value) PRODSTATO = JSON.parse(r.value);
+  }catch(e){ PRODSTATO = {}; }
+  prodStatoLoaded = true;
+}
+async function saveProdStato(){
+  try{ await storage.set('produzione-stato', JSON.stringify(PRODSTATO), PRODSTATO_SHARED); }
+  catch(e){ /* storage non disponibile */ }
+}
+async function loadManual(){
+  try{
+    const r = await storage.get('manual-commesse', PRODSTATO_SHARED);
+    if(r && r.value) MANUAL = JSON.parse(r.value);
+  }catch(e){ MANUAL = {}; }
+  manualLoaded = true;
+}
+async function saveManual(){
+  try{ await storage.set('manual-commesse', JSON.stringify(MANUAL), PRODSTATO_SHARED); }
+  catch(e){ /* storage non disponibile */ }
+}
+
+// modalità sola lettura: attiva se il link contiene ?readonly=1 (vedi pulsante "Condividi") — dichiarate più in alto
+
+// --- registro delle modifiche: chi ha fatto cosa e quando, condiviso tra tutti ---
+async function logAzione(azione, dettaglio){
+  try{
+    const nome = await getNomeUtente();
+    let log = [];
+    try{
+      const r = await storage.get('log-modifiche', PRODSTATO_SHARED);
+      if(r && r.value) log = JSON.parse(r.value);
+    }catch(e){ /* nessun registro precedente */ }
+    log.unshift({ autore: nome, azione, dettaglio, at: Date.now() });
+    const sogliaVentiGiorni = Date.now() - 20 * 24 * 60 * 60 * 1000;
+    log = log.filter(v => v.at >= sogliaVentiGiorni);
+    if(log.length > 150) log = log.slice(0, 150);
+    await storage.set('log-modifiche', JSON.stringify(log), PRODSTATO_SHARED);
+  }catch(e){ /* il registro non è critico: un suo errore non deve bloccare l'azione */ }
+}
+
+function setFase(commessaKey, fase){
+  if(READONLY) return;
+  // il collaudo ora è una fase visibile come le altre: l'archiviazione la fai tu manualmente
+  const prev = PRODSTATO[commessaKey] || {};
+  PRODSTATO[commessaKey] = { ...prev, fase, archiviata: false };
+  saveProdStato();
+  logAzione('Spostamento fase', `Commessa ${commessaKey} → ${fase}`);
+  render();
+}
+function archivia(commessaKey){
+  if(READONLY) return;
+  PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), archiviata: true, archivedAt: Date.now() };
+  saveProdStato();
+  logAzione('Archiviazione', `Commessa ${commessaKey} completata e archiviata`);
+  render();
+}
+function ripristina(commessaKey){
+  if(READONLY) return;
+  PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), archiviata: false };
+  saveProdStato();
+  logAzione('Ripristino', `Commessa ${commessaKey} ripristinata dall'archivio`);
+  render();
+}
+async function eliminaCommessa(commessaKey){
+  if(READONLY) return;
+  if(!confirm('Eliminare definitivamente la commessa ' + commessaKey + '? Non si può annullare.')) return;
+  delete PRODSTATO[commessaKey];
+  delete MANUAL[commessaKey];
+  await saveProdStato();
+  await saveManual();
+  logAzione('Eliminazione', `Commessa ${commessaKey} eliminata definitivamente da Produzione`);
+  render();
+}
+async function eliminaDaPrelievi(commessaKey){
+  if(READONLY) return;
+  if(!confirm('Eliminare la commessa ' + commessaKey + ' da Prelievi? Non ricomparirà più, nemmeno ricaricando un file Excel che la contiene ancora.')) return;
+  PRODSTATO[commessaKey] = { ...(PRODSTATO[commessaKey]||{}), eliminataPrelievi: true };
+  await saveProdStato();
+  logAzione('Eliminazione', `Commessa ${commessaKey} eliminata da Prelievi`);
+  render();
+}
+function setArrivo(commessaKey, campo, checked){
+  if(READONLY) return;
+  const prev = PRODSTATO[commessaKey] || {};
+  const arrivi = { ...(prev.arrivi||{}) };
+  arrivi[campo] = checked ? { checked:true, at: Date.now() } : { checked:false, at:null };
+  PRODSTATO[commessaKey] = { ...prev, arrivi };
+  saveProdStato();
+  logAzione('Arrivo', `Commessa ${commessaKey}: ${campo} ${checked ? 'confermato' : 'annullato'}`);
+  render();
+}
+
+const $ = s => document.querySelector(s);
+const todayStart = () => { const d = new Date(); d.setHours(0,0,0,0); return d; };
+const todayTagText = todayStart().toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+
+function updateTitle(){
+  const label = currentView === 'produzione' ? 'Dashboard Produzione' : 'Dashboard Prelievi';
+  document.getElementById('main-title').innerHTML = `${label} <span class="tag" id="today-tag">${todayTagText}</span>`;
+  document.getElementById('main-subtitle').textContent = currentView === 'produzione'
+    ? 'Gestione delle fasi di produzione: Da Prelevare → Telaio → Finitura → Collaudo'
+    : 'Priorità di prelievo per commessa (telaio + allestimento), basata su "Inizio schedulato"';
+  document.title = label;
+}
+
+function extractFase(desc){
+  if(!desc) return 'Altro';
+  const raw = String(desc).split(' - ')[0].trim();
+  return raw.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.slice(1).toLowerCase());
+}
+function extractFamiglia(desc){
+  if(!desc) return '';
+  const parts = String(desc).split(' - ');
+  return parts.length > 1 ? parts.slice(1).join(' - ').trim() : '';
+}
+// Chiave commessa: primi 5 digit del codice materiale, dopo la lettera iniziale e prima del codice fase a 3 cifre.
+// Es. S26177020-0523-01D -> commessa "26177" (26177 + 020 dove 020/010 indica telaio/allestimento)
+function extractCommessaKey(materiale){
+  if(!materiale) return 'N/D';
+  const primo = String(materiale).split('-')[0];
+  const digits = primo.replace(/^\D+/, '');
+  if(digits.length > 3) return digits.slice(0, digits.length - 3);
+  return primo;
+}
+
+async function loadSavedFilters(){
+  try{
+    const r = await storage.get('filtri-default', false);
+    if(r && r.value) return JSON.parse(r.value);
+  }catch(e){ /* nessuna preferenza salvata */ }
+  return null;
+}
+async function saveFilters(){
+  try{
+    await storage.set('filtri-default', JSON.stringify({
+      divisione: $('#divisione-filter').value,
+      fasi: [...activeFasi]
+    }), false);
+  }catch(e){ /* storage non disponibile */ }
+}
+
+function bucketFor(days, isComplete){
+  // il giorno in cui arriva "Inizio schedulato" la produzione comincia a lavorare la commessa
+  const inProduzione = days !== null && days !== undefined && days <= 0;
+  if(inProduzione){
+    if(isComplete) return {key:'in_produzione', label:'In produzione', color:'var(--in-produzione)', bg:'var(--in-produzione-bg)'};
+    return {key:'scaduto', label:'In produzione · prelievo incompleto', color:'var(--scaduto)', bg:'var(--scaduto-bg)'};
+  }
+  if(isComplete) return {key:'completo', label:'Completato', color:'var(--completo)', bg:'var(--completo-bg)'};
+  if(days === null || days === undefined) return {key:'pianificato', label:'Pianificato', color:'var(--pianificato)', bg:'var(--pianificato-bg)'};
+  if(days <= 5) return {key:'urgente', label:'Entro 5 giorni', color:'var(--urgente)', bg:'var(--urgente-bg)'};
+  if(days <= 14) return {key:'prossimo', label:'Entro 2 settimane', color:'var(--prossimo)', bg:'var(--prossimo-bg)'};
+  return {key:'pianificato', label:'Pianificato', color:'var(--pianificato)', bg:'var(--pianificato-bg)'};
+}
+
+function parsePct(v){
+  if(v === null || v === undefined) return 0;
+  if(typeof v === 'number') return v <= 1 ? Math.round(v*100) : Math.round(v);
+  const n = parseFloat(String(v).replace('%','').replace(',','.'));
+  return isNaN(n) ? 0 : Math.round(n);
+}
+
+function isRowComplete(row){
+  const pct = parsePct(row[COL.pct]);
+  if(pct >= 100) return true;
+  const ewm = String(row[COL.statoEwm]||'').toUpperCase();
+  const datac = String(row[COL.statoDataC]||'').toUpperCase();
+  return ewm.includes('COMPLETATA') || datac === 'FINITO';
+}
+
+function toDate(v){
+  if(!v) return null;
+  if(v instanceof Date) return v;
+  if(typeof v === 'number') return new Date(Math.round((v - 25569) * 86400 * 1000));
+  const d = new Date(v);
+  return isNaN(d) ? null : d;
+}
+function daysUntil(d){
+  const t = todayStart();
+  const dd = new Date(d); dd.setHours(0,0,0,0);
+  return Math.round((dd - t) / 86400000);
+}
+function fmtDate(d){
+  return d ? d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'}) : '—';
+}
+function fmtDateTime(ts){
+  const d = new Date(ts);
+  return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'}) + ' ' +
+         d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+}
+
+async function handleFile(file){
+  if(READONLY || isOperatore()){ alert('Non sei autorizzato a caricare file Excel.'); return; }
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(ws, {defval:''});
+    const newRaw = json.filter(r => r[COL.ordine]);
+    const previousRaw = RAW; // quello che c'era prima di questo caricamento (sessione precedente o file precedente)
+    RAW = newRaw;
+    lastFileName = file.name;
+    lastUploadAt = Date.now();
+    rawLoaded = true;
+    lastChanges = previousRaw.length ? computeChanges(previousRaw, RAW) : null;
+    bannerDismissed = false; bannerOpen = false;
+    document.getElementById('file-name').textContent = file.name + ' · ' + RAW.length + ' operazioni · caricato ' + fmtDateTime(lastUploadAt);
+    populateCentroFilter();
+    populateDivisioneFilter();
+    await populateFaseChips();
+    filtersPopulated = true;
+    await applyViewVisibility();
+    await saveLastRaw(file.name);
+    // PRODSTATO e MANUAL NON vengono mai toccati qui: si caricano una sola volta
+    // e cambiano solo quando l'utente sposta/archivia/aggiunge una commessa a mano.
+    if(!prodStatoLoaded) await loadProdStato();
+    if(!manualLoaded) await loadManual();
+    render();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+let lastChanges = null;
+let bannerDismissed = false;
+let bannerOpen = false;
+
+// confronta il file appena caricato con quello precedente, raggruppando per Ordine (ODP)
+function computeChanges(oldRaw, newRaw){
+  const groupByOrdine = rows => {
+    const m = {};
+    rows.forEach(r => {
+      const ord = r[COL.ordine];
+      if(!m[ord]) m[ord] = { materiale: r[COL.materiale], descrizione: r[COL.descrizione], rows: [] };
+      m[ord].rows.push(r);
+    });
+    return m;
+  };
+  const avgPctOf = rows => Math.round(rows.reduce((s,r)=>s+parsePct(r[COL.pct]),0) / rows.length);
+  const datesOf = rows => [...new Set(rows.map(r => {
+    const d = toDate(r[COL.inizio]);
+    return d ? d.toISOString().slice(0,10) : '';
+  }))].sort().join(',');
+
+  const oldMap = groupByOrdine(oldRaw);
+  const newMap = groupByOrdine(newRaw);
+  const oldCommesseKeys = new Set(Object.values(oldMap).map(info => extractCommessaKey(info.materiale)));
+
+  const nuovi = [], cambiati = [], rimossi = [];
+  Object.entries(newMap).forEach(([ord, info]) => {
+    const old = oldMap[ord];
+    const commessaKey = extractCommessaKey(info.materiale);
+    const fase = extractFase(info.descrizione);
+    if(!old){
+      nuovi.push({ ordine: ord, commessaKey, fase, commessaEsistente: oldCommesseKeys.has(commessaKey) });
+      return;
+    }
+    const pctNew = avgPctOf(info.rows), pctOld = avgPctOf(old.rows);
+    const dateNew = datesOf(info.rows), dateOld = datesOf(old.rows);
+    if(pctNew !== pctOld || dateNew !== dateOld){
+      cambiati.push({ ordine: ord, commessaKey, fase, pctOld, pctNew, dateChanged: dateNew !== dateOld });
+    }
+  });
+  Object.entries(oldMap).forEach(([ord, info]) => {
+    if(!newMap[ord]){
+      rimossi.push({ ordine: ord, commessaKey: extractCommessaKey(info.materiale), fase: extractFase(info.descrizione) });
+    }
+  });
+  return { nuovi, cambiati, rimossi };
+}
+
+function renderUpdateBanner(){
+  const el = document.getElementById('update-banner');
+  if(!lastChanges || bannerDismissed){ el.style.display = 'none'; return; }
+  const { nuovi, cambiati, rimossi } = lastChanges;
+  const nuoviOdpSuCommesseEsistenti = nuovi.filter(x => x.commessaEsistente);
+  const nuoveCommesse = nuovi.filter(x => !x.commessaEsistente);
+  const totale = nuovi.length + cambiati.length + rimossi.length;
+  if(!totale){ el.style.display = 'none'; return; }
+
+  const parts = [];
+  if(nuoviOdpSuCommesseEsistenti.length) parts.push(`${nuoviOdpSuCommesseEsistenti.length} nuov${nuoviOdpSuCommesseEsistenti.length===1?'o ODP':'i ODP'} su commesse esistenti`);
+  if(nuoveCommesse.length) parts.push(`${nuoveCommesse.length} nuov${nuoveCommesse.length===1?'a commessa':'e commesse'}`);
+  if(cambiati.length) parts.push(`${cambiati.length} aggiornat${cambiati.length===1?'a':'e'}`);
+  if(rimossi.length) parts.push(`${rimossi.length} non più nel file`);
+
+  const rowsHtml = (list, arrowFn) => list.slice(0,10).map(x => `
+    <div class="ub-row">
+      <span class="mono">${x.ordine}</span>
+      <span>· Commessa ${x.commessaKey} · ${x.fase}</span>
+      ${arrowFn(x)}
+    </div>`).join('') + (list.length > 10 ? `<div class="ub-row" style="color:var(--text-dim);">+ altr${list.length-10===1?'a':'e'} ${list.length-10}</div>` : '');
+
+  el.style.display = 'block';
+  el.classList.toggle('open', bannerOpen);
+  el.innerHTML = `
+    <div class="ub-head" id="ub-head">
+      <span class="ub-summary">📋 Ultimo caricamento: ${parts.join(' · ')}</span>
+      <span class="ub-toggle">${bannerOpen ? 'Nascondi' : 'Mostra dettagli'}</span>
+    </div>
+    <div class="ub-details">
+      ${nuoviOdpSuCommesseEsistenti.length ? `<div class="ub-group"><div class="ub-group-title">Nuovi ODP su commesse già esistenti</div>${rowsHtml(nuoviOdpSuCommesseEsistenti, () => '')}</div>` : ''}
+      ${nuoveCommesse.length ? `<div class="ub-group"><div class="ub-group-title">Commesse completamente nuove</div>${rowsHtml(nuoveCommesse, () => '')}</div>` : ''}
+      ${cambiati.length ? `<div class="ub-group"><div class="ub-group-title">Aggiornate</div>${rowsHtml(cambiati, x => `<span class="arrow">·</span> <span class="mono">${x.pctOld}%</span><span class="arrow">→</span><span class="mono">${x.pctNew}%</span>${x.dateChanged?' · data cambiata':''}`)}</div>` : ''}
+      ${rimossi.length ? `<div class="ub-group"><div class="ub-group-title">Non più presenti nel file</div>${rowsHtml(rimossi, () => '')}</div>` : ''}
+      <div class="ub-dismiss" id="ub-dismiss">Ho visto, nascondi</div>
+    </div>`;
+
+  document.getElementById('ub-head').onclick = () => { bannerOpen = !bannerOpen; renderUpdateBanner(); };
+  document.getElementById('ub-dismiss').onclick = ev => { ev.stopPropagation(); bannerDismissed = true; renderUpdateBanner(); };
+}
+
+function populateCentroFilter(){
+  const sel = $('#centro-filter');
+  const centri = [...new Set(RAW.map(r => r[COL.centro]).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">Tutti i centri di lavoro</option>' +
+    centri.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+function populateDivisioneFilter(){
+  const sel = $('#divisione-filter');
+  const divisioni = [...new Set(RAW.map(r => r[COL.divisione]).filter(Boolean))].sort();
+  sel.innerHTML = '<option value="">Tutte le divisioni</option>' +
+    divisioni.map(d => `<option value="${d}">${d}</option>`).join('');
+}
+async function populateFaseChips(){
+  const fasi = [...new Set(RAW.map(r => extractFase(r[COL.descrizione])))].sort();
+  if(!fasiInitialized){
+    const saved = await loadSavedFilters();
+    if(saved){
+      activeFasi = new Set(saved.fasi.filter(f => fasi.includes(f)));
+      if(saved.divisione === '' || fasi.length) $('#divisione-filter').value = saved.divisione || '';
+    } else {
+      activeFasi = new Set(fasi.filter(f => DEFAULT_FASI.includes(f)));
+    }
+    fasiInitialized = true;
+  }
+  $('#fase-chips').innerHTML = fasi.map(f => `<div class="fase-chip ${activeFasi.has(f)?'on':''}" data-fase="${f}">${f}</div>`).join('');
+  document.querySelectorAll('.fase-chip').forEach(el => el.onclick = () => {
+    const f = el.dataset.fase;
+    if(activeFasi.has(f)) activeFasi.delete(f); else activeFasi.add(f);
+    saveFilters();
+    document.querySelectorAll('.fase-chip').forEach(c => c.classList.toggle('on', activeFasi.has(c.dataset.fase)));
+    render();
+  });
+}
+
+// livello ODP (una riga = un ordine di produzione, una fase)
+function buildOdps(){
+  const map = {};
+  RAW.forEach(row => {
+    const ordine = row[COL.ordine];
+    if(!map[ordine]) map[ordine] = {
+      ordine, materiale: row[COL.materiale], descrizione: row[COL.descrizione],
+      divisione: row[COL.divisione], fase: extractFase(row[COL.descrizione]),
+      commessaKey: extractCommessaKey(row[COL.materiale]), ops: []
+    };
+    const complete = isRowComplete(row);
+    const dateVal = toDate(row[COL.inizio]);
+    const days = dateVal ? daysUntil(dateVal) : null;
+    map[ordine].ops.push({
+      operazione: row[COL.operazione], testo: row[COL.opTesto], centro: row[COL.centro],
+      inizio: dateVal, days, pct: parsePct(row[COL.pct]),
+      complete, bucket: bucketFor(days ?? 9999, complete)
+    });
+  });
+
+  // aggiungi le commesse create manualmente, come coppia di "ODP" telaio/finitura —
+  // ma solo per le chiavi che l'export Excel non contiene già: appena arrivano dati reali
+  // per quella commessa, questi sostituiscono automaticamente il segnaposto manuale
+  const chiaviReali = new Set(Object.values(map).map(o => o.commessaKey));
+  Object.entries(MANUAL).forEach(([key, m]) => {
+    if(chiaviReali.has(key)) return;
+    [['telaio','Telaio finito','telaioData','telaioPct','telaioOdp'], ['finitura','Allestimento finito','finituraData','finituraPct','finituraOdp']].forEach(([part, faseLabel, dateKey, pctKey, odpKey]) => {
+      const ordineId = m[odpKey] || ('MAN-' + key + '-' + part);
+      const dateVal = toDate(m[dateKey]);
+      const pct = m[pctKey] !== undefined && m[pctKey] !== '' ? Number(m[pctKey]) : 0;
+      const days = dateVal ? daysUntil(dateVal) : null;
+      const complete = pct >= 100;
+      map[ordineId] = {
+        ordine: ordineId, materiale: '', descrizione: m.famiglia || '',
+        divisione: m.divisione || '', fase: faseLabel, commessaKey: key,
+        ops: [{ operazione:'', testo:'Inserita manualmente', centro:'', inizio: dateVal, days, pct,
+                 complete, bucket: bucketFor(days ?? 9999, complete) }]
+      };
+    });
+  });
+
+  return Object.values(map).map(o => {
+    const incomplete = o.ops.filter(x => !x.complete && x.days !== null);
+    const allComplete = o.ops.every(x => x.complete);
+    let driving;
+    if(allComplete){
+      const withDate = o.ops.filter(x => x.days !== null);
+      const min = withDate.length ? withDate.reduce((a,b) => a.days < b.days ? a : b) : null;
+      driving = { days: min ? min.days : null, date: min ? min.inizio : null, bucket: bucketFor(min ? min.days : null, true) };
+    } else if(incomplete.length){
+      const d = incomplete.reduce((a,b) => (a.days < b.days ? a : b));
+      driving = { days: d.days, date: d.inizio, bucket: bucketFor(d.days, false) };
+    } else driving = { days: null, date: null, bucket: bucketFor(null,false) };
+    const avgPct = Math.round(o.ops.reduce((s,x)=>s+x.pct,0) / o.ops.length);
+    return { ...o, allComplete, driving, avgPct,
+      opsPending: o.ops.filter(x=>!x.complete).length, opsTotal: o.ops.length,
+      centri: [...new Set(o.ops.map(x=>x.centro).filter(Boolean))] };
+  });
+}
+
+// livello Commessa: raggruppa gli ODP (telaio + allestimento) che condividono la stessa commessaKey
+function buildCommesse(odps){
+  const map = {};
+  odps.forEach(o => {
+    if(!map[o.commessaKey]) map[o.commessaKey] = { key: o.commessaKey, famiglia: extractFamiglia(o.descrizione), odps: [] };
+    map[o.commessaKey].odps.push(o);
+  });
+  return Object.values(map).map(c => {
+    const incomplete = c.odps.filter(o => !o.allComplete && o.driving.days !== null);
+    const allComplete = c.odps.every(o => o.allComplete);
+    let driving;
+    if(allComplete){
+      const withDate = c.odps.filter(o => o.driving.date);
+      const min = withDate.length ? withDate.reduce((a,b) => a.driving.days < b.driving.days ? a : b) : null;
+      driving = { days: min ? min.driving.days : null, date: min ? min.driving.date : null, bucket: bucketFor(min ? min.driving.days : null, true) };
+    } else if(incomplete.length){
+      const d = incomplete.reduce((a,b) => (a.driving.days < b.driving.days ? a : b));
+      driving = { days: d.driving.days, date: d.driving.date, bucket: bucketFor(d.driving.days, false) };
+    } else driving = { days: null, date: null, bucket: bucketFor(null,false) };
+    const totalOpsAll = c.odps.reduce((s,o)=>s+o.opsTotal,0);
+    const avgPct = Math.round(c.odps.reduce((s,o)=>s+o.avgPct*o.opsTotal,0) / (totalOpsAll || 1));
+    const stato = PRODSTATO[c.key] || {};
+    return { ...c, allComplete, driving, avgPct,
+      opsPending: c.odps.reduce((s,o)=>s+o.opsPending,0), opsTotal: totalOpsAll,
+      centri: [...new Set(c.odps.flatMap(o=>o.centri))],
+      divisioni: [...new Set(c.odps.map(o=>o.divisione).filter(Boolean))],
+      fasi: [...new Set(c.odps.map(o=>o.fase))],
+      prodFase: stato.fase || null, archiviata: !!stato.archiviata, eliminataPrelievi: !!stato.eliminataPrelievi };
+  }).sort((a,b) => {
+    const aDone = a.driving.bucket.key === 'completo';
+    const bDone = b.driving.bucket.key === 'completo';
+    if(aDone !== bDone) return aDone ? 1 : -1;
+    return (a.driving.days ?? 9999) - (b.driving.days ?? 9999);
+  });
+}
+
+function render(){
+  renderUpdateBanner();
+  const allOdps = buildOdps();
+
+  const search = $('#search').value.trim().toLowerCase();
+  const centroFilter = $('#centro-filter').value;
+  const divisioneFilter = $('#divisione-filter').value;
+  const showCompletate = $('#show-completate').checked;
+  const showArchiviate = $('#show-archiviate').checked;
+
+  const odpMatches = o => {
+    if(centroFilter && !o.centri.includes(centroFilter)) return false;
+    if(divisioneFilter && o.divisione !== divisioneFilter) return false;
+    if(activeFasi.size && !activeFasi.has(o.fase)) return false;
+    return true;
+  };
+
+  const filteredOdps = allOdps.filter(odpMatches);
+  const commesse = buildCommesse(filteredOdps);
+
+  // resta in Prelievi finché non la sposti tu manualmente in produzione (Buffer);
+  // una volta assegnata una fase, vive solo nella vista Produzione
+  const attive = commesse.filter(c => !c.archiviata && !c.prodFase && !c.eliminataPrelievi);
+  const archiviate = commesse.filter(c => c.archiviata);
+  const nonArchiviate = commesse.filter(c => !c.archiviata);
+
+  const counts = {scaduto:0, in_produzione:0, urgente:0, prossimo:0, pianificato:0, completo:0};
+  attive.forEach(c => counts[c.driving.bucket.key]++);
+
+  const statDefs = [
+    {key:'scaduto', label:'Da recuperare', color:'var(--scaduto)'},
+    {key:'in_produzione', label:'In produzione', color:'var(--in-produzione)'},
+    {key:'urgente', label:'Entro 5gg', color:'var(--urgente)'},
+    {key:'prossimo', label:'Entro 2 sett.', color:'var(--prossimo)'},
+    {key:'pianificato', label:'Pianificate', color:'var(--pianificato)'},
+    {key:'completo', label:'Completate', color:'var(--completo)'}
+  ];
+  $('#stats').innerHTML = statDefs.map(s => `
+    <div class="stat ${activeBucket===s.key?'active':''}" style="--stat-color:${s.color}" data-bucket="${s.key}">
+      <div class="n">${counts[s.key]}</div><div class="l">${s.label}</div>
+    </div>`).join('');
+  document.querySelectorAll('.stat').forEach(el => el.onclick = () => {
+    const b = el.dataset.bucket;
+    activeBucket = activeBucket === b ? null : b;
+    render();
+  });
+
+  let filtered = attive.filter(c => {
+    if(!showCompletate && c.driving.bucket.key === 'completo' && activeBucket !== 'completo') return false;
+    if(activeBucket && c.driving.bucket.key !== activeBucket) return false;
+    if(search){
+      const hay = (c.key + ' ' + c.famiglia + ' ' + c.odps.map(o=>o.ordine+' '+o.materiale).join(' ')).toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  const list = $('#card-list');
+  if(!filtered.length){
+    list.innerHTML = '';
+    $('#no-results').style.display = 'block';
+  } else {
+    $('#no-results').style.display = 'none';
+    list.innerHTML = filtered.map(c => commessaHtml(c)).join('');
+    filtered.forEach(c => {
+      const head = document.getElementById('chead-'+cssId(c.key));
+      if(head) head.onclick = () => document.getElementById('ccard-'+cssId(c.key)).classList.toggle('open');
+      c.odps.forEach(o => {
+        const oh = document.getElementById('ohead-'+cssId(c.key)+'-'+o.ordine);
+        if(oh) oh.onclick = ev => {
+          ev.stopPropagation();
+          document.getElementById('ocard-'+cssId(c.key)+'-'+o.ordine).classList.toggle('open');
+        };
+      });
+      const spostaBtn = document.getElementById('sposta-'+cssId(c.key));
+      if(spostaBtn) spostaBtn.onclick = ev => { ev.stopPropagation(); setFase(c.key, 'buffer'); };
+      const eliminaBtn = document.getElementById('elimina-prelievo-'+cssId(c.key));
+      if(eliminaBtn) eliminaBtn.onclick = ev => { ev.stopPropagation(); eliminaDaPrelievi(c.key); };
+    });
+  }
+
+  const archWrap = $('#archiviate-wrap');
+  if(showArchiviate && archiviate.length){
+    archWrap.style.display = 'block';
+    $('#archiviate-list').innerHTML = archiviate.map(c => archiviataHtml(c)).join('');
+    archiviate.forEach(c => {
+      const btn = document.getElementById('ripristina-'+cssId(c.key));
+      if(btn) btn.onclick = () => ripristina(c.key);
+      const del = document.getElementById('elimina-'+cssId(c.key));
+      if(del) del.onclick = () => eliminaCommessa(c.key);
+    });
+  } else {
+    archWrap.style.display = 'none';
+  }
+
+  renderKanban(nonArchiviate);
+}
+function cssId(s){ return String(s).replace(/[^a-zA-Z0-9]/g,'_'); }
+
+let openKcards = new Set(); // tiene traccia delle card Kanban aperte, così non si richiudono quando la board viene ridisegnata (es. dopo un check arrivo)
+
+function renderKanban(attive){
+  // una commessa entra in Kanban perché TU l'hai spostata (ha una prodFase assegnata),
+  // non in base alla data: altrimenti una commessa aggiunta a mano senza scadenza
+  // (o con scadenza futura) sparirebbe sia da Prelievi che da Produzione.
+  let inProd = attive.filter(c => c.prodFase);
+  const search = ($('#produzione-search').value || '').trim().toLowerCase();
+  let matchKey = null;
+  if(search){
+    inProd = inProd.filter(c => {
+      const hay = (c.key + ' ' + c.odps.map(o => o.ordine).join(' ')).toLowerCase();
+      return hay.includes(search);
+    });
+    if(inProd.length === 1) matchKey = inProd[0].key;
+  }
+  const cols = [
+    { key: 'buffer', title: 'Da Prelevare', empty: search ? 'Nessun risultato' : 'Nessuna commessa da prelevare', a: COLONNA_COLORI.buffer },
+    { key: 'telaio', title: 'Telaio', empty: search ? 'Nessun risultato' : 'Nessuna commessa in telaio', a: COLONNA_COLORI.telaio },
+    { key: 'finitura', title: 'Finitura', empty: search ? 'Nessun risultato' : 'Nessuna commessa in finitura', a: COLONNA_COLORI.finitura },
+    { key: 'collaudo', title: 'Collaudo', empty: search ? 'Nessun risultato' : 'Nessuna commessa in collaudo', a: COLONNA_COLORI.collaudo }
+  ];
+  const board = $('#kanban');
+  board.innerHTML = cols.map(col => {
+    const items = inProd.filter(c => c.prodFase === col.key)
+      .sort((a,b) => (parseInt(a.key,10) || 0) - (parseInt(b.key,10) || 0) || a.key.localeCompare(b.key));
+    return `
+    <div class="kanban-col">
+      <div class="kanban-col-head" style="--kcol-a:${col.a};">
+        <div class="kanban-col-head-left">
+          <input type="color" class="kcol-color-input" data-fase-colore="${col.key}" value="${col.a}" title="Cambia colore colonna">
+          <h3>${col.title}</h3>
+        </div>
+        <span class="kcount">${items.length}</span>
+      </div>
+      <div class="kanban-col-scroll">
+        ${items.length ? items.map(c => kanbanCardHtml(c)).join('') : `<div class="kanban-col-empty">${col.empty}</div>`}
+      </div>
+    </div>`;
+  }).join('');
+  board.className = 'kanban modo-' + KANBAN_VIEWMODE;
+  document.getElementById('wrap').classList.toggle('kanban-compact', currentView === 'produzione' && KANBAN_VIEWMODE === 'colonna');
+  document.querySelectorAll('.kcol-color-input').forEach(inp => {
+    inp.onclick = ev => ev.stopPropagation();
+    inp.onchange = ev => { ev.stopPropagation(); salvaColonnaColore(inp.dataset.faseColore, inp.value); };
+  });
+  if(matchKey){
+    openKcards.add(matchKey);
+    const el = document.getElementById('kcard-' + cssId(matchKey));
+    if(el){
+      el.classList.add('open');
+      setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 30);
+    }
+  }
+  document.querySelectorAll('.kcard').forEach(card => {
+    const key = card.dataset.key;
+    // apre/chiude localmente, senza richiamare render(): lo stato resta corretto
+    // anche se un'altra azione (fase, arrivo, archivia) ridisegna la board
+    card.onclick = () => {
+      if(openKcards.has(key)) openKcards.delete(key); else openKcards.add(key);
+      card.classList.toggle('open');
+    };
+    card.querySelectorAll('.kmove-btn').forEach(btn => btn.onclick = ev => {
+      ev.stopPropagation();
+      if(btn.dataset.eliminaKey) eliminaCommessa(btn.dataset.eliminaKey);
+      else if(btn.dataset.fase === '__archivia__') archivia(key);
+      else setFase(key, btn.dataset.fase);
+    });
+    card.querySelectorAll('.karrivo-btn').forEach(btn => btn.onclick = ev => {
+      ev.stopPropagation();
+      const checked = !btn.classList.contains('on');
+      setArrivo(key, btn.dataset.campo, checked);
+    });
+    card.querySelectorAll('.copy-btn').forEach(btn => btn.onclick = async ev => {
+      ev.stopPropagation();
+      const testo = btn.dataset.copy;
+      try{ await navigator.clipboard.writeText(testo); }
+      catch(e){ /* clipboard non disponibile */ }
+      const originale = btn.textContent;
+      btn.textContent = '✓';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = originale; btn.classList.remove('copied'); }, 1200);
+    });
+    const flagBtn = card.querySelector('.flag-btn');
+    if(flagBtn) flagBtn.onclick = ev => { ev.stopPropagation(); toggleFlag(flagBtn.dataset.flagKey); };
+    card.querySelectorAll('.odp-fase-tag').forEach(tag => tag.onclick = ev => {
+      ev.stopPropagation();
+      ciclaPrelievo(tag.dataset.prelievoKey, tag.dataset.prelievoTipo);
+    });
+    const notaToggle = card.querySelector('.knota-toggle');
+    if(notaToggle) notaToggle.onclick = ev => { ev.stopPropagation(); card.querySelector('.knota-text').focus(); };
+    const notaTextarea = card.querySelector('.knota-text');
+    if(notaTextarea) notaTextarea.onclick = ev => ev.stopPropagation();
+    const notaSave = card.querySelector('.knota-save');
+    if(notaSave) notaSave.onclick = ev => {
+      ev.stopPropagation();
+      salvaNota(notaSave.dataset.saveKey, card.querySelector('.knota-text').value.trim());
+    };
+  });
+}
+
+// sequenza produttiva: da una fase si può passare solo alle successive
+const FASE_ORDER = ['buffer','telaio','finitura','collaudo'];
+
+// modalità di visualizzazione Kanban: preferenza personale, non condivisa
+let KANBAN_VIEWMODE = 'colonna';
+let viewmodeLoaded = false;
+let giroMancantiLoaded = false;
+async function loadViewmode(){
+  try{
+    const r = await storage.get('kanban-viewmode', false);
+    if(r && r.value) KANBAN_VIEWMODE = r.value;
+  }catch(e){ /* nessuna preferenza salvata */ }
+  viewmodeLoaded = true;
+  document.querySelectorAll('.viewmode-opt').forEach(el => el.classList.toggle('active', el.dataset.mode === KANBAN_VIEWMODE));
+}
+async function setViewmode(mode){
+  KANBAN_VIEWMODE = mode;
+  document.querySelectorAll('.viewmode-opt').forEach(el => el.classList.toggle('active', el.dataset.mode === mode));
+  try{ await storage.set('kanban-viewmode', mode, false); }catch(e){}
+  render();
+}
+document.querySelectorAll('.viewmode-opt').forEach(el => el.addEventListener('click', () => setViewmode(el.dataset.mode)));
+
+// colori delle colonne Kanban: default di partenza, ma l'utente può cambiarli — salvati e condivisi
+let COLONNA_COLORI = { buffer:'#8e8e93', telaio:'#0071e3', finitura:'#ff9500', collaudo:'#34c759' };
+let colonnaColoriLoaded = false;
+async function loadColonnaColori(){
+  try{
+    const r = await storage.get('colonna-colori', PRODSTATO_SHARED);
+    if(r && r.value) COLONNA_COLORI = { ...COLONNA_COLORI, ...JSON.parse(r.value) };
+  }catch(e){ /* nessun colore personalizzato salvato */ }
+}
+async function salvaColonnaColore(fase, colore){
+  if(READONLY) return;
+  COLONNA_COLORI[fase] = colore;
+  try{ await storage.set('colonna-colori', JSON.stringify(COLONNA_COLORI), PRODSTATO_SHARED); }catch(e){}
+  render();
+}
+const FASE_DOT_LABELS = {buffer:'BUF', telaio:'TEL', finitura:'FIN', collaudo:'COL'};
+const ARRIVO_CAMPI = [
+  {key:'telaio', label:'C/TELAIO', dot:'C/T'},
+  {key:'basamento', label:'BASAMENTO', dot:'BAS'},
+  {key:'cisterna', label:'CISTERNA', dot:'CIS'}
+];
+
+// nome utente per firmare le note (chiesto una volta sola, salvato in locale)
+let NOME_UTENTE = '';
+async function getNomeUtente(){
+  if(NOME_UTENTE) return NOME_UTENTE;
+  try{
+    const r = await storage.get('nome-utente', false);
+    if(r && r.value){ NOME_UTENTE = r.value; return NOME_UTENTE; }
+  }catch(e){ /* niente salvato */ }
+  let nome = '';
+  while(!nome){
+    nome = (prompt('Come ti chiami? (obbligatorio, serve a firmare le note e a mostrarti online)') || '').trim();
+  }
+  NOME_UTENTE = nome;
+  try{ await storage.set('nome-utente', NOME_UTENTE, false); }catch(e){}
+  return NOME_UTENTE;
+}
+
+async function toggleFlag(key){
+  if(READONLY) return;
+  const prev = PRODSTATO[key] || {};
+  const nuovo = !prev.flag;
+  PRODSTATO[key] = { ...prev, flag: nuovo };
+  await saveProdStato();
+  logAzione('Urgente', `Commessa ${key} segnata ${nuovo ? 'URGENTE' : 'come non più urgente'}`);
+  render();
+}
+async function salvaNota(key, testo){
+  if(READONLY) return;
+  const nome = await getNomeUtente();
+  const prev = PRODSTATO[key] || {};
+  PRODSTATO[key] = { ...prev, nota: { testo, autore: nome, at: Date.now() } };
+  await saveProdStato();
+  logAzione('Nota', `Commessa ${key}: nuova nota salvata`);
+  render();
+}
+
+// stato di prelievo manuale per telaio/finitura: null -> giallo (in prelievo) -> verde (prelevato) -> null
+function tipoFase(fase){ return /telaio/i.test(fase) ? 'telaio' : 'finitura'; }
+async function ciclaPrelievo(key, tipo){
+  // attivo anche nei link in sola lettura, a differenza delle altre azioni
+  const prev = PRODSTATO[key] || {};
+  const prelievo = { ...(prev.prelievo || {}) };
+  const cur = prelievo[tipo] || null;
+  // ciclo: neutro -> giallo (in corso) -> arancio (in pausa) -> verde (completato) -> neutro
+  const next = cur === null ? 'giallo' : (cur === 'giallo' ? 'arancio' : (cur === 'arancio' ? 'verde' : null));
+  prelievo[tipo] = next;
+  PRODSTATO[key] = { ...prev, prelievo };
+  await saveProdStato();
+  logAzione('Stato prelievo', `Commessa ${key}: ${tipo} → ${next || 'neutro'}`);
+  render();
+}
+
+function dotRowHtml(c){
+  const arrivi = (PRODSTATO[c.key]||{}).arrivi || {};
+  const prelievo = (PRODSTATO[c.key]||{}).prelievo || {};
+  const arrivoDots = ARRIVO_CAMPI.map(f => {
+    const on = arrivi[f.key] && arrivi[f.key].checked;
+    return `<span class="dot-item"><span class="dot ${on?'on':''}"></span>${f.dot}</span>`;
+  }).join('');
+  const faseDots = ['telaio','finitura'].map(f => {
+    const stato = prelievo[f] || null;
+    return `<span class="dot-item"><span class="dot ${stato?'stato-'+stato:''}"></span>${FASE_DOT_LABELS[f]}</span>`;
+  }).join('');
+  return `<div class="dot-row">${arrivoDots}<span class="dot-sep">|</span>${faseDots}</div>`;
+}
+
+function kanbanCardHtml(c){
+  const idx = FASE_ORDER.indexOf(c.prodFase);
+  const cap = f => f === 'buffer' ? 'Da Prelevare' : (f.charAt(0).toUpperCase() + f.slice(1));
+  const moves = [];
+  if(idx > 0) moves.push({ fase: FASE_ORDER[idx-1], label: '← ' + cap(FASE_ORDER[idx-1]) });
+  if(idx < FASE_ORDER.length - 1) moves.push({ fase: FASE_ORDER[idx+1], label: '→ ' + cap(FASE_ORDER[idx+1]) });
+  if(c.prodFase === 'collaudo') moves.push({ fase: '__archivia__', label: '✓ Completa e archivia' });
+  const arrivi = (PRODSTATO[c.key]||{}).arrivi || {};
+  const stato = PRODSTATO[c.key] || {};
+  const flagged = !!stato.flag;
+  const nota = stato.nota || null;
+  const prelievoStato = stato.prelievo || {};
+  const abbreviaFase = f => /allestimento/i.test(f) ? 'ALL. FINITO' : f.replace(/\s*finito$/i, '').trim();
+
+  // avanzamento prelievo massivo: ogni tag verde vale 2, giallo/arancio vale 1; totale = 2 * numero di tag possibili
+  let punti = 0, max = 0;
+  c.odps.forEach(o => {
+    const tipo = tipoFase(o.fase);
+    const st = prelievoStato[tipo] || null;
+    max += 2;
+    if(st === 'giallo' || st === 'arancio') punti += 1;
+    else if(st === 'verde') punti += 2;
+  });
+  const pct = max > 0 ? Math.round(punti / max * 100) : 0;
+  const barClass = pct === 100 ? 'completo' : (pct > 0 ? 'parziale' : 'vuoto');
+  const odpsHtml = c.odps.slice().sort((a,b)=>(a.driving.days??9999)-(b.driving.days??9999)).map(o => {
+    const tipo = tipoFase(o.fase);
+    const statoPrelievo = prelievoStato[tipo] || null;
+    return `
+    <div class="kodp-row">
+      <div class="kodp-top">
+        <span class="odp-fase-tag ${statoPrelievo?'stato-'+statoPrelievo:''}" data-prelievo-key="${c.key}" data-prelievo-tipo="${tipo}">${statoPrelievo==='arancio' ? 'IN PAUSA' : abbreviaFase(o.fase)}</span>
+        <span class="odp-num">ODP ${o.ordine}</span>
+        <div class="copy-btn" data-copy="${o.ordine}" title="Copia numero ODP">⧉</div>
+      </div>
+      <div class="kodp-bottom">
+        <div class="odp-mini-bar"><span style="width:${o.avgPct}%"></span></div>
+        <span class="odp-pct">${o.avgPct}%</span>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="kcard ${openKcards.has(c.key)?'open':''}" id="kcard-${cssId(c.key)}" data-key="${c.key}">
+    ${dotRowHtml(c)}
+    <div class="kcard-top">
+      <span class="kcard-key">${c.key}</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${(prelievoStato.telaio==='arancio'||prelievoStato.finitura==='arancio') ? '<span class="pausa-badge">🟠 IN PAUSA</span>' : ''}
+        <span class="flag-btn ${flagged?'on':''}" data-flag-key="${c.key}" title="Segna come urgente">⚑</span>
+        <span class="kchev">▶</span>
+      </div>
+    </div>
+    ${flagged ? `<div class="urgente-pill">URGENTE</div>` : ''}
+    <div class="kcard-fam">${c.famiglia||''} · ${c.opsPending}/${c.opsTotal} da fare</div>
+    <div class="kcard-moves">
+      ${moves.map(m => `<div class="kmove-btn ${m.fase==='__archivia__'?'archivia':''}" data-fase="${m.fase}">${m.label}</div>`).join('')}
+    </div>
+    <div class="kcard-odps">
+      <div class="kcard-odps-title">ODP di questa commessa</div>
+      ${odpsHtml}
+    </div>
+    <div class="karrivi">
+      ${ARRIVO_CAMPI.map(f => {
+        const a = arrivi[f.key];
+        const on = a && a.checked;
+        return `
+        <div class="karrivo-btn ${on?'on':''}" data-campo="${f.key}">
+          <span class="karrivo-check-icon">${on ? '✓' : ''}</span>
+          <span class="karrivo-label">${f.label}</span>
+          ${on ? `<span class="karrivo-ts">${fmtDateTime(a.at)}</span>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="knota-wrap">
+      <div class="knota-toggle" data-nota-key="${c.key}">📝 ${nota && nota.testo ? 'Nota' : 'Aggiungi nota'}</div>
+      <div class="knota-box">
+        <textarea class="knota-text" placeholder="Scrivi una nota...">${nota ? nota.testo : ''}</textarea>
+        <div class="knota-actions">
+          <div class="knota-save" data-save-key="${c.key}">Salva nota</div>
+          <div class="kmove-btn elimina" data-elimina-key="${c.key}">🗑 Elimina</div>
+        </div>
+        ${nota && nota.testo ? `<div class="knota-signature">${nota.autore} · ${fmtDateTime(nota.at)}</div>` : ''}
+      </div>
+    </div>
+    <div class="kcard-progress" title="Avanzamento prelievo massivo: ${pct}%">
+      <div class="kcard-progress-pct ${pct===100?'completo':''}">${pct}%</div>
+      <div class="kcard-progress-bar">
+        <div class="kcard-progress-fill ${barClass}" style="width:${pct}%;"></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function fmtDue(days, bucketKey){
+  if(bucketKey === 'completo') return 'Completato';
+  if(bucketKey === 'in_produzione') return 'In produzione';
+  if(bucketKey === 'scaduto') return 'In produzione · incompleto';
+  if(days === null || days === undefined) return '—';
+  if(days === 0) return 'Oggi';
+  return `tra ${days}gg`;
+}
+
+function commessaHtml(c){
+  const b = c.driving.bucket;
+  // il pulsante è sempre disponibile: a volte serve anticipare una commessa prima della sua data
+  const moveControl = `
+    <div class="prod-controls">
+      <div class="sposta-btn" id="sposta-${cssId(c.key)}">→ Sposta in Da Prelevare</div>
+      <div class="sposta-btn elimina" id="elimina-prelievo-${cssId(c.key)}">🗑 Elimina</div>
+    </div>`;
+  const telaioOdp = c.odps.find(o => o.fase.toLowerCase().includes('telaio'));
+  const finOdp = c.odps.find(o => o.fase.toLowerCase().includes('allestimento') || o.fase.toLowerCase().includes('finitura'));
+  const datesLine = (telaioOdp || finOdp) ? `
+    <div class="ch-dates">
+      ${telaioOdp ? `<span>Telaio entro: <b>${fmtDate(telaioOdp.driving.date)}</b></span>` : ''}
+      ${finOdp ? `<span>Finitura entro: <b>${fmtDate(finOdp.driving.date)}</b></span>` : ''}
+    </div>` : '';
+  return `
+  <div class="commessa" id="ccard-${cssId(c.key)}" style="--row-color:${b.color}">
+    <div class="commessa-head" id="chead-${cssId(c.key)}">
+      <div class="ch-top">
+        <div class="ch-odp"><span class="lbl">Commessa</span><span class="num">${c.key}</span></div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="due-pill">${fmtDue(c.driving.days, c.driving.bucket.key)}</span>
+          <span class="chev">▶</span>
+        </div>
+      </div>
+      <div class="ch-material">${c.famiglia||''} · ${c.odps.length} ODP (${c.fasi.join(' + ')})</div>
+      ${datesLine}
+      <div class="ch-progress-row">
+        <div class="bar-track"><span class="bar-fill" style="width:${c.avgPct}%"></span></div>
+        <div class="pct">${c.avgPct}%</div>
+        <div class="opn">${c.opsPending}/${c.opsTotal} da fare</div>
+      </div>
+    </div>
+    ${moveControl}
+    <div class="odp-list">
+      ${c.odps.slice().sort((a,b2)=>(a.driving.days??9999)-(b2.driving.days??9999)).map(o => odpHtml(c.key, o)).join('')}
+    </div>
+  </div>`;
+}
+
+function archiviataHtml(c){
+  return `
+  <div class="commessa" style="--row-color:var(--completo);opacity:.85;">
+    <div class="commessa-head" style="cursor:default;">
+      <div class="ch-top">
+        <div class="ch-odp"><span class="lbl">Commessa</span><span class="num">${c.key}</span></div>
+        <div style="display:flex;gap:8px;">
+          <div class="ripristina-btn" id="ripristina-${cssId(c.key)}">Ripristina</div>
+          <div class="ripristina-btn elimina" id="elimina-${cssId(c.key)}">🗑 Elimina</div>
+        </div>
+      </div>
+      <div class="ch-material">${c.famiglia||''} · ${c.odps.length} ODP · archiviata il ${new Date(PRODSTATO[c.key]?.archivedAt||Date.now()).toLocaleDateString('it-IT')}</div>
+    </div>
+  </div>`;
+}
+
+function odpHtml(commessaKey, o){
+  const b = o.driving.bucket;
+  const opsRows = o.ops.slice().sort((a,b2)=>(a.days??9999)-(b2.days??9999)).map(x => `
+    <tr>
+      <td class="mono">${x.operazione||''}</td>
+      <td>${x.testo||''}</td>
+      <td class="mono">${x.centro||''}</td>
+      <td class="mono">${x.inizio ? fmtDate(x.inizio) : '—'}</td>
+      <td class="mono">${fmtDue(x.days, x.bucket.key)}</td>
+      <td><span class="pill" style="--row-color:${x.bucket.color};--row-color-bg:${x.bucket.bg}">${x.pct}%</span></td>
+    </tr>`).join('');
+
+  return `
+  <div class="odp-card" id="ocard-${cssId(commessaKey)}-${o.ordine}" style="--row-color:${b.color}">
+    <div class="odp-head" id="ohead-${cssId(commessaKey)}-${o.ordine}">
+      <span class="odp-fase-tag">${o.fase}</span>
+      <span class="odp-num">ODP ${o.ordine}</span>
+      <button type="button" class="odp-copy-btn" data-copy="${o.ordine}" title="Copia numero ODP">⧉</button>
+      <span class="odp-div">${o.divisione||''}</span>
+      <div class="odp-mini-bar"><span style="width:${o.avgPct}%"></span></div>
+      <span class="odp-pct">${o.avgPct}%</span>
+      <span class="odp-date-abs">${fmtDate(o.driving.date)}</span>
+      <span class="odp-due">${fmtDue(o.driving.days, o.driving.bucket.key)}</span>
+      <span class="odp-chev">▶</span>
+    </div>
+    <div class="op-table">
+      <table class="ops">
+        <thead><tr><th>Op.</th><th>Descrizione operazione</th><th>Centro</th><th>Inizio sched.</th><th>Scadenza</th><th>% Prelievo</th></tr></thead>
+        <tbody>${opsRows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+async function applyViewVisibility(){
+  if(!rawLoaded) await loadLastRaw();
+  const hasData = RAW.length > 0;
+  document.getElementById('dropzone').style.display = (hasData && currentView === 'prelievi') ? 'flex' : 'none';
+  document.getElementById('file-name').style.display = currentView === 'prelievi' ? 'block' : 'none';
+  document.getElementById('empty').style.display = (currentView === 'prelievi' && !hasData) ? 'block' : 'none';
+  document.getElementById('content').style.display = (currentView === 'prelievi' && hasData) ? 'block' : 'none';
+  document.getElementById('view-produzione').style.display = (currentView === 'produzione') ? 'block' : 'none';
+  document.getElementById('wrap').classList.toggle('wrap-produzione', currentView === 'produzione');
+  if(hasData && !filtersPopulated){
+    document.getElementById('file-name').textContent = lastFileName + ' · ' + RAW.length + ' operazioni' + (lastUploadAt ? ' · caricato ' + fmtDateTime(lastUploadAt) : '');
+    populateCentroFilter();
+    populateDivisioneFilter();
+    await populateFaseChips();
+    filtersPopulated = true;
+  }
+  updateTitle();
+  if(!manualLoaded) await loadManual();
+  if(!prodStatoLoaded) await loadProdStato();
+  if(!colonnaColoriLoaded){ await loadColonnaColori(); colonnaColoriLoaded = true; }
+  if(!viewmodeLoaded) await loadViewmode();
+  if(!giroMancantiLoaded){ await loadGiroMancanti(); giroMancantiLoaded = true; }
+  render();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => {
+  currentView = btn.dataset.view;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === currentView));
+  applyViewVisibility();
+});
+document.getElementById('empty-shortcut').addEventListener('click', () => {
+  currentView = 'produzione';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.view === currentView));
+  applyViewVisibility();
+});
+
+['#search','#centro-filter','#show-completate','#show-archiviate','#produzione-search'].forEach(sel => {
+  document.addEventListener('input', e => { if(e.target.matches(sel)) render(); });
+  document.addEventListener('change', e => { if(e.target.matches(sel)) render(); });
+});
+document.addEventListener('change', e => {
+  if(e.target.matches('#divisione-filter')){ saveFilters(); render(); }
+});
+
+document.getElementById('file-input').addEventListener('change', e => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+document.getElementById('big-dz').addEventListener('click', () => document.getElementById('file-input').click());
+document.getElementById('dropzone').addEventListener('click', () => document.getElementById('file-input').click());
+
+['dragover','dragleave','drop'].forEach(evt => document.body.addEventListener(evt, e => e.preventDefault()));
+document.body.addEventListener('dragover', () => {
+  document.getElementById('big-dz').style.borderColor = '#EA580C';
+  document.getElementById('dropzone').classList.add('drag');
+});
+document.body.addEventListener('dragleave', () => {
+  document.getElementById('big-dz').style.borderColor = '';
+  document.getElementById('dropzone').classList.remove('drag');
+});
+document.body.addEventListener('drop', e => {
+  document.getElementById('big-dz').style.borderColor = '';
+  document.getElementById('dropzone').classList.remove('drag');
+  if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+// --- pannello "Nuova commessa manuale" (solo dalla vista Produzione: unico punto condiviso di scrittura) ---
+function openAddPanel(){
+  document.getElementById('add-fase-wrap').style.display = 'flex';
+  document.getElementById('add-panel').classList.add('open');
+  document.getElementById('add-panel').scrollIntoView({behavior:'smooth', block:'center'});
+}
+function closeAddPanel(){
+  document.getElementById('add-panel').classList.remove('open');
+  ['add-key','add-famiglia','add-divisione','add-odp-telaio','add-data-telaio','add-odp-finitura','add-data-finitura'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('add-pct-telaio').value = 0;
+  document.getElementById('add-pct-finitura').value = 0;
+}
+document.getElementById('add-btn-produzione').addEventListener('click', () => { if(!READONLY) openAddPanel(); });
+document.getElementById('add-cancel').addEventListener('click', closeAddPanel);
+document.getElementById('add-save').addEventListener('click', async () => {
+  if(READONLY) return;
+  const key = document.getElementById('add-key').value.trim();
+  if(!key){ alert('Inserisci una chiave commessa.'); return; }
+  MANUAL[key] = {
+    famiglia: document.getElementById('add-famiglia').value.trim(),
+    divisione: document.getElementById('add-divisione').value.trim(),
+    telaioOdp: document.getElementById('add-odp-telaio').value.trim() || null,
+    telaioData: document.getElementById('add-data-telaio').value || null,
+    telaioPct: Number(document.getElementById('add-pct-telaio').value) || 0,
+    finituraOdp: document.getElementById('add-odp-finitura').value.trim() || null,
+    finituraData: document.getElementById('add-data-finitura').value || null,
+    finituraPct: Number(document.getElementById('add-pct-finitura').value) || 0
+  };
+  await saveManual();
+  logAzione('Nuova commessa', `Commessa ${key} aggiunta manualmente`);
+  const fase = document.getElementById('add-fase-iniziale').value;
+  setFase(key, fase); // salva anche PRODSTATO (condivisa) e già richiama render()
+  closeAddPanel();
+  if(RAW.length === 0){
+    // se non c'era ancora un export caricato, mostra comunque il contenuto
+    document.getElementById('empty').style.display = 'none';
+    document.getElementById('content').style.display = currentView === 'prelievi' ? 'block' : 'none';
+  }
+  render();
+});
+
+// --- tema chiaro/scuro, a scelta dell'utente, salvato come preferenza personale ---
+let DARK_MODE = false;
+async function loadDarkMode(){
+  try{
+    const r = await storage.get('dark-mode', false);
+    DARK_MODE = r && r.value === 'true';
+  }catch(e){ DARK_MODE = false; }
+  applyDarkMode();
+}
+async function toggleDarkMode(){
+  DARK_MODE = !DARK_MODE;
+  applyDarkMode();
+  try{ await storage.set('dark-mode', String(DARK_MODE), false); }catch(e){}
+}
+function applyDarkMode(){
+  document.documentElement.classList.toggle('dark', DARK_MODE);
+  const btn = document.getElementById('theme-toggle');
+  if(btn) btn.textContent = DARK_MODE ? '☀️' : '🌙';
+}
+document.getElementById('theme-toggle').addEventListener('click', toggleDarkMode);
+loadDarkMode();
+
+// --- condividi: link normale (lettura/scrittura) o sola lettura ---
+if(READONLY) document.documentElement.classList.add('is-readonly');
+function baseUrlSenzaParametri(){
+  const u = new URL(location.href);
+  u.search = '';
+  return u.toString();
+}
+async function copiaLink(url, btn){
+  try{ await navigator.clipboard.writeText(url); }catch(e){ /* clipboard non disponibile */ }
+  const titleEl = btn.querySelector('.so-title');
+  const originale = titleEl.textContent;
+  titleEl.textContent = 'Copiato ✓';
+  btn.classList.add('copied');
+  setTimeout(() => { titleEl.textContent = originale; btn.classList.remove('copied'); }, 1400);
+}
+document.getElementById('share-toggle').addEventListener('click', ev => {
+  ev.stopPropagation();
+  document.getElementById('share-menu').classList.toggle('open');
+});
+document.getElementById('share-normal').addEventListener('click', function(){
+  copiaLink(baseUrlSenzaParametri(), this);
+});
+document.getElementById('share-readonly').addEventListener('click', function(){
+  copiaLink(baseUrlSenzaParametri() + '?readonly=1', this);
+});
+document.getElementById('share-readonly-produzione').addEventListener('click', function(){
+  copiaLink(baseUrlSenzaParametri() + '?readonly=1&only=produzione', this);
+});
+document.addEventListener('click', () => document.getElementById('share-menu').classList.remove('open'));
+
+if(ONLY_VIEW === 'produzione'){
+  document.getElementById('tab-prelievi').style.display = 'none';
+  document.getElementById('tab-produzione').classList.add('active');
+}
+if(READONLY){
+  // chi ha un link in sola lettura non deve poter generare/condividere il link normale (con permessi di modifica)
+  document.getElementById('share-normal').style.display = 'none';
+}
+async function avviaSessione(){
+  const sb = getSupabase();
+  const { data:{ session } } = await sb.auth.getSession();
+  if(!session) return;
+  const { data: profile } = await sb.from('app_profiles').select('username,display_name,role,active').maybeSingle();
+  if(!profile || !profile.active) return sb.auth.signOut();
+  APP_PROFILE = profile;
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('wrap').style.display = '';
+  if(isOperatore()){
+    currentView = 'produzione';
+    document.getElementById('tab-prelievi').style.display = 'none';
+    document.getElementById('dropzone').style.display = 'none';
+    document.getElementById('share-toggle').style.display = 'none';
+    document.getElementById('backup-toggle').style.display = 'none';
+  }
+  await applyViewVisibility();
+}
+document.getElementById('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
+  const pin = document.getElementById('login-pin').value;
+  const err = document.getElementById('login-error'); err.textContent = '';
+  const { error } = await getSupabase().auth.signInWithPassword({ email: username + '@u005.local', password: pin });
+  if(error){ err.textContent = 'Credenziali non valide.'; return; }
+  await avviaSessione();
+});
+avviaSessione();
+
+// --- aggiornamento in tempo reale: quando un collega cambia qualcosa di condiviso
+// (Produzione o export), la dashboard si ridisegna da sola, senza bisogno di ricaricare ---
+let realtimeDebounce = null;
+async function refreshFromRealtime(){
+  clearTimeout(realtimeDebounce);
+  realtimeDebounce = setTimeout(async () => {
+    await loadProdStato();
+    await loadManual();
+    await loadGiroMancanti();
+    const prevFileName = lastFileName;
+    await loadLastRaw();
+    if(lastFileName !== prevFileName || true){
+      document.getElementById('file-name').textContent =
+        lastFileName + ' · ' + RAW.length + ' operazioni' + (lastUploadAt ? ' · caricato ' + fmtDateTime(lastUploadAt) : '');
+    }
+    render();
+  }, 400);
+}
+function setupRealtime(){
+  if(window.storage) return; // dentro Claude non serve: niente Supabase, niente realtime
+  const sb = getSupabase();
+  if(!sb) return;
+  sb.channel('storage_kv_live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'storage_kv', filter: 'shared=eq.true' }, refreshFromRealtime)
+    .subscribe();
+}
+setupRealtime();
+
+// --- chi è online: usa Supabase Realtime Presence, stesso nome usato per firmare le note ---
+async function setupPresence(){
+  if(window.storage) return; // dentro Claude non serve
+  const sb = getSupabase();
+  if(!sb) return;
+  const myId = getClientId();
+  const nome = await getNomeUtente();
+  const channel = sb.channel('presenza-dashboard', { config: { presence: { key: myId } } });
+
+  function renderOnline(){
+    const state = channel.presenceState();
+    const persone = Object.values(state).map(arr => arr[0]).filter(Boolean);
+    document.getElementById('online-toggle').style.display = 'flex';
+    document.getElementById('online-count').textContent = persone.length;
+    document.getElementById('online-menu').innerHTML =
+      '<div class="online-menu-title">Online ora</div>' +
+      persone.map(p => `<div class="online-person"><span class="online-dot"></span>${p.nome || 'Utente'}</div>`).join('');
+  }
+
+  channel.on('presence', { event: 'sync' }, renderOnline);
+  channel.subscribe(async status => {
+    if(status === 'SUBSCRIBED'){
+      await channel.track({ nome, online_at: new Date().toISOString() });
+    }
+  });
+}
+setupPresence();
+document.getElementById('online-toggle').addEventListener('click', ev => {
+  ev.stopPropagation();
+  document.getElementById('online-menu').classList.toggle('open');
+});
+document.addEventListener('click', () => document.getElementById('online-menu').classList.remove('open'));
+
+// --- giro mancanti: il prelevatore segnala inizio/fine del controllo mancanti su tutte le commesse in produzione ---
+let GIRO_MANCANTI = null; // null = nessun giro in corso, altrimenti {da, iniziatoAlle}
+async function loadGiroMancanti(){
+  try{
+    const r = await storage.get('giro-mancanti', PRODSTATO_SHARED);
+    GIRO_MANCANTI = (r && r.value) ? JSON.parse(r.value) : null;
+  }catch(e){ GIRO_MANCANTI = null; }
+  renderGiroBanner();
+}
+function renderGiroBanner(){
+  const banner = document.getElementById('giro-banner');
+  if(GIRO_MANCANTI && GIRO_MANCANTI.da){
+    banner.style.display = 'flex';
+    document.getElementById('giro-txt').innerHTML =
+      '🔍 Giro mancanti in corso — iniziato da <b>' + GIRO_MANCANTI.da + '</b> alle <b>' + fmtDateTime(GIRO_MANCANTI.iniziatoAlle).split(' ')[1] + '</b>';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+async function iniziaGiroMancanti(){
+  if(READONLY) return;
+  let nome = '';
+  while(!nome){
+    nome = (prompt('Chi sta facendo il giro mancanti?') || '').trim();
+  }
+  GIRO_MANCANTI = { da: nome, iniziatoAlle: Date.now() };
+  try{ await storage.set('giro-mancanti', JSON.stringify(GIRO_MANCANTI), PRODSTATO_SHARED); }catch(e){}
+  logAzione('Giro mancanti', 'Iniziato da ' + nome);
+  renderGiroBanner();
+}
+async function terminaGiroMancanti(){
+  if(READONLY) return;
+  const chi = GIRO_MANCANTI ? GIRO_MANCANTI.da : '';
+  GIRO_MANCANTI = null;
+  try{ await storage.set('giro-mancanti', '', PRODSTATO_SHARED); }catch(e){}
+  logAzione('Giro mancanti', 'Terminato' + (chi ? ' (era di ' + chi + ')' : ''));
+  renderGiroBanner();
+}
+document.getElementById('giro-start-btn').addEventListener('click', iniziaGiroMancanti);
+document.getElementById('giro-end-btn').addEventListener('click', terminaGiroMancanti);
+
+// --- pannello registro modifiche ---
+async function apriRegistroModifiche(){
+  const menu = document.getElementById('log-menu');
+  const willOpen = !menu.classList.contains('open');
+  document.getElementById('online-menu').classList.remove('open');
+  if(!willOpen){ menu.classList.remove('open'); return; }
+  menu.innerHTML = '<div class="log-menu-title">Registro modifiche</div><div class="log-empty">Carico...</div>';
+  menu.classList.add('open');
+  let log = [];
+  try{
+    const r = await storage.get('log-modifiche', PRODSTATO_SHARED);
+    if(r && r.value) log = JSON.parse(r.value);
+  }catch(e){ /* nessuna voce ancora salvata */ }
+  const sogliaVentiGiorni = Date.now() - 20 * 24 * 60 * 60 * 1000;
+  log = log.filter(v => v.at >= sogliaVentiGiorni);
+  if(!log.length){
+    menu.innerHTML = '<div class="log-menu-title">Registro modifiche</div><div class="log-empty">Nessuna modifica registrata negli ultimi 20 giorni</div>';
+    return;
+  }
+  menu.innerHTML = '<div class="log-menu-title">Registro modifiche</div>' +
+    log.map(v => `
+      <div class="log-entry">
+        <div class="le-top"><span class="le-autore">${v.autore}</span><span>${fmtDateTime(v.at)}</span></div>
+        <div class="le-dettaglio">${v.azione}: ${v.dettaglio}</div>
+      </div>`).join('');
+}
+document.getElementById('log-toggle').addEventListener('click', ev => { ev.stopPropagation(); apriRegistroModifiche(); });
+document.addEventListener('click', () => document.getElementById('log-menu').classList.remove('open'));
+
+// --- backup scaricabile: esporta tutti i dati (Produzione + Prelievi + colori + registro) in un file ---
+async function scaricaBackup(){
+  const btn = document.getElementById('backup-toggle');
+  const originale = btn.textContent;
+  btn.textContent = '⏳';
+  try{
+    let logModifiche = [];
+    try{
+      const r = await storage.get('log-modifiche', PRODSTATO_SHARED);
+      if(r && r.value) logModifiche = JSON.parse(r.value);
+    }catch(e){ /* nessun registro salvato */ }
+
+    const backup = {
+      generatoIl: new Date().toISOString(),
+      prelievi: { fileName: lastFileName, uploadedAt: lastUploadAt, righe: RAW },
+      produzione: { stato: PRODSTATO, commesseManuali: MANUAL, coloriColonne: COLONNA_COLORI },
+      registroModifiche: logModifiche
+    };
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const oggi = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `backup-dashboard-prelievi-${oggi}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }catch(e){
+    alert('Backup non riuscito: ' + e.message);
+  }
+  btn.textContent = originale;
+}
+document.getElementById('backup-toggle').addEventListener('click', ev => { ev.stopPropagation(); scaricaBackup(); });
+
+// --- notifiche del browser: avvisa per le commesse scadute o urgenti in Prelievi ---
+let NOTIF_ON = false;
+async function loadNotifPref(){
+  try{
+    const r = await storage.get('notifiche-attive', false);
+    NOTIF_ON = (r && r.value === 'true') && Notification.permission === 'granted';
+  }catch(e){ NOTIF_ON = false; }
+  aggiornaAspettoNotif();
+}
+function aggiornaAspettoNotif(){
+  const btn = document.getElementById('notif-toggle');
+  btn.classList.toggle('on', NOTIF_ON);
+  btn.textContent = NOTIF_ON ? '🔔' : '🔕';
+  btn.title = NOTIF_ON ? 'Notifiche attive (clicca per disattivare)' : 'Attiva notifiche per commesse scadute/urgenti';
+}
+async function toggleNotifiche(){
+  if(!('Notification' in window)){
+    alert('Il tuo browser non supporta le notifiche.');
+    return;
+  }
+  if(NOTIF_ON){
+    NOTIF_ON = false;
+    try{ await storage.set('notifiche-attive', 'false', false); }catch(e){}
+    aggiornaAspettoNotif();
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  if(perm !== 'granted'){
+    alert('Permesso negato: per attivarle dovrai consentire le notifiche dalle impostazioni del browser per questo sito.');
+    return;
+  }
+  NOTIF_ON = true;
+  try{ await storage.set('notifiche-attive', 'true', false); }catch(e){}
+  aggiornaAspettoNotif();
+  controllaEnotifica(true);
+}
+function controllaEnotifica(forzaMessaggio){
+  if(!NOTIF_ON || Notification.permission !== 'granted') return;
+  const commesse = buildCommesse(buildOdps());
+  const attive = commesse.filter(c => !c.archiviata && !c.prodFase && !c.eliminataPrelievi);
+  const scadute = attive.filter(c => c.driving.bucket.key === 'scaduto');
+  const urgenti = attive.filter(c => c.driving.bucket.key === 'urgente');
+  if(scadute.length === 0 && urgenti.length === 0){
+    if(forzaMessaggio) new Notification('Dashboard Prelievi', { body: 'Nessuna commessa scaduta o urgente al momento 👍' });
+    return;
+  }
+  const parti = [];
+  if(scadute.length) parti.push(scadute.length + ' commessa/e in produzione con prelievo incompleto');
+  if(urgenti.length) parti.push(urgenti.length + ' commessa/e da prelevare entro 5 giorni');
+  new Notification('⚠️ Dashboard Prelievi', { body: parti.join(' · '), tag: 'dashboard-prelievi-urgenze' });
+}
+document.getElementById('notif-toggle').addEventListener('click', ev => { ev.stopPropagation(); toggleNotifiche(); });
+loadNotifPref().then(() => {
+  if(NOTIF_ON) setTimeout(() => controllaEnotifica(false), 2000);
+});
+setInterval(() => controllaEnotifica(false), 60 * 60 * 1000); // ricontrolla ogni ora se la scheda resta aperta
+
+// --- statistiche e andamento nel tempo ---
+function inizioSettimana(ts){
+  const d = new Date(ts);
+  const giorno = (d.getDay() + 6) % 7; // lunedì = 0
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() - giorno);
+  return d;
+}
+function barChartHtml(righe, coloreVar){
+  if(!righe.length) return '<div class="stats-empty">Nessun dato disponibile ancora.</div>';
+  const max = Math.max(...righe.map(r => r.valore), 1);
+  return righe.map(r => `
+    <div class="stats-bar-row">
+      <span class="stats-bar-label">${r.etichetta}</span>
+      <div class="stats-bar-track"><div class="stats-bar-fill" style="width:${(r.valore/max*100).toFixed(1)}%;background:${r.colore || coloreVar};"></div></div>
+      <span class="stats-bar-value">${r.valore}</span>
+    </div>`).join('');
+}
+async function apriStatistiche(){
+  document.getElementById('stats-overlay').classList.add('open');
+  const body = document.getElementById('stats-body');
+  body.innerHTML = '<div class="stats-empty">Carico...</div>';
+
+  // completate per settimana (ultime 8), da PRODSTATO.archivedAt
+  const oraSettimana = inizioSettimana(Date.now()).getTime();
+  const settimane = [];
+  for(let i = 7; i >= 0; i--){
+    settimane.push({ inizio: oraSettimana - i * 7 * 86400000, valore: 0 });
+  }
+  Object.values(PRODSTATO).forEach(s => {
+    if(!s || !s.archiviata || !s.archivedAt) return;
+    const settimanaCommessa = inizioSettimana(s.archivedAt).getTime();
+    const match = settimane.find(w => w.inizio === settimanaCommessa);
+    if(match) match.valore++;
+  });
+  const righeSettimane = settimane.map(w => ({
+    etichetta: new Date(w.inizio).toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit'}),
+    valore: w.valore
+  }));
+  const totaleCompletate8sett = settimane.reduce((s,w) => s + w.valore, 0);
+
+  // distribuzione attuale per fase (Kanban)
+  const faseLabel = { buffer:'Da Prelevare', telaio:'Telaio', finitura:'Finitura', collaudo:'Collaudo' };
+  const faseColore = { buffer: COLONNA_COLORI.buffer, telaio: COLONNA_COLORI.telaio, finitura: COLONNA_COLORI.finitura, collaudo: COLONNA_COLORI.collaudo };
+  const contFase = { buffer:0, telaio:0, finitura:0, collaudo:0 };
+  let inProduzioneOra = 0, archiviateOra = 0;
+  Object.values(PRODSTATO).forEach(s => {
+    if(!s) return;
+    if(s.archiviata){ archiviateOra++; return; }
+    if(s.fase && contFase.hasOwnProperty(s.fase)){ contFase[s.fase]++; inProduzioneOra++; }
+  });
+  const righeFasi = Object.keys(faseLabel).map(k => ({ etichetta: faseLabel[k], valore: contFase[k], colore: faseColore[k] }));
+
+  // azioni per persona, dal registro modifiche condiviso
+  let log = [];
+  try{
+    const r = await storage.get('log-modifiche', PRODSTATO_SHARED);
+    if(r && r.value) log = JSON.parse(r.value);
+  }catch(e){ /* nessun registro salvato */ }
+  const perPersona = {};
+  log.forEach(v => { perPersona[v.autore] = (perPersona[v.autore]||0) + 1; });
+  const righePersone = Object.entries(perPersona)
+    .sort((a,b) => b[1]-a[1]).slice(0,8)
+    .map(([nome, valore]) => ({ etichetta: nome.length > 11 ? nome.slice(0,10)+'…' : nome, valore }));
+
+  // stato prelievo massivo: giallo = in corso, arancio = in pausa, verde = completato
+  let telaioGiallo=0, telaioArancio=0, telaioVerde=0, finituraGiallo=0, finituraArancio=0, finituraVerde=0;
+  Object.values(PRODSTATO).forEach(s => {
+    if(!s || !s.prelievo) return;
+    if(s.prelievo.telaio === 'giallo') telaioGiallo++;
+    if(s.prelievo.telaio === 'arancio') telaioArancio++;
+    if(s.prelievo.telaio === 'verde') telaioVerde++;
+    if(s.prelievo.finitura === 'giallo') finituraGiallo++;
+    if(s.prelievo.finitura === 'arancio') finituraArancio++;
+    if(s.prelievo.finitura === 'verde') finituraVerde++;
+  });
+  const righePrelievo = [
+    { etichetta: 'Telaio 🟡', valore: telaioGiallo, colore: '#ffcc00' },
+    { etichetta: 'Telaio 🟠', valore: telaioArancio, colore: '#ff9500' },
+    { etichetta: 'Telaio 🟢', valore: telaioVerde, colore: 'var(--completo)' },
+    { etichetta: 'Finitura 🟡', valore: finituraGiallo, colore: '#ffcc00' },
+    { etichetta: 'Finitura 🟠', valore: finituraArancio, colore: '#ff9500' },
+    { etichetta: 'Finitura 🟢', valore: finituraVerde, colore: 'var(--completo)' }
+  ];
+
+  body.innerHTML = `
+    <div class="stats-section">
+      <div class="stats-summary-grid">
+        <div class="stats-summary-card"><div class="n">${totaleCompletate8sett}</div><div class="l">Completate (8 sett.)</div></div>
+        <div class="stats-summary-card"><div class="n">${inProduzioneOra}</div><div class="l">In produzione ora</div></div>
+        <div class="stats-summary-card"><div class="n">${archiviateOra}</div><div class="l">Archiviate totali</div></div>
+      </div>
+    </div>
+    <div class="stats-section">
+      <div class="stats-section-title">Commesse completate per settimana</div>
+      ${barChartHtml(righeSettimane, 'var(--completo)')}
+    </div>
+    <div class="stats-section">
+      <div class="stats-section-title">Distribuzione attuale per fase</div>
+      ${barChartHtml(righeFasi, 'var(--accent)')}
+    </div>
+    <div class="stats-section">
+      <div class="stats-section-title">Stato prelievo massivo (🟡 in corso · 🟠 in pausa · 🟢 completato)</div>
+      ${barChartHtml(righePrelievo, 'var(--accent)')}
+    </div>
+    <div class="stats-section">
+      <div class="stats-section-title">Azioni registrate per persona</div>
+      ${barChartHtml(righePersone, 'var(--accent)')}
+    </div>
+  `;
+}
+document.getElementById('stats-toggle').addEventListener('click', apriStatistiche);
+document.getElementById('stats-close').addEventListener('click', () => document.getElementById('stats-overlay').classList.remove('open'));
+document.getElementById('stats-overlay').addEventListener('click', ev => {
+  if(ev.target.id === 'stats-overlay') document.getElementById('stats-overlay').classList.remove('open');
+});
+</script>
+</body>
+</html>
