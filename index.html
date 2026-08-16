@@ -1723,6 +1723,13 @@ const ARRIVO_CAMPI = [
 let NOME_UTENTE = '';
 async function getNomeUtente(){
   if(NOME_UTENTE) return NOME_UTENTE;
+  // Durante la schermata di accesso non chiedere dati aggiuntivi: il nome
+  // dell'utente autenticato viene usato automaticamente dopo il login.
+  if(APP_PROFILE && APP_PROFILE.display_name){
+    NOME_UTENTE = APP_PROFILE.display_name;
+    return NOME_UTENTE;
+  }
+  if(!APP_PROFILE) return 'Utente';
   try{
     const r = await storage.get('nome-utente', false);
     if(r && r.value){ NOME_UTENTE = r.value; return NOME_UTENTE; }
