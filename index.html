@@ -2239,6 +2239,7 @@ async function avviaSessione(){
   }
   if(isLettura()) document.documentElement.classList.add('is-readonly');
   await applyViewVisibility();
+  setupPresence();
 }
 document.getElementById('login-form').addEventListener('submit', async e => {
   e.preventDefault();
@@ -2286,10 +2287,13 @@ function setupRealtime(){
 setupRealtime();
 
 // --- chi è online: usa Supabase Realtime Presence, stesso nome usato per firmare le note ---
+let presenceStarted = false;
 async function setupPresence(){
   if(window.storage) return; // dentro Claude non serve
+  if(!APP_PROFILE || presenceStarted) return;
   const sb = getSupabase();
   if(!sb) return;
+  presenceStarted = true;
   const myId = getClientId();
   const nome = await getNomeUtente();
   const channel = sb.channel('presenza-dashboard', { config: { presence: { key: myId } } });
@@ -2315,7 +2319,6 @@ async function setupPresence(){
     }
   });
 }
-setupPresence();
 document.getElementById('online-toggle').addEventListener('click', ev => {
   ev.stopPropagation();
   document.getElementById('online-menu').classList.toggle('open');
