@@ -207,8 +207,9 @@ header{margin-bottom:18px;}
   position:fixed;top:18px;right:258px;z-index:50;
   height:42px;padding:0 13px;border-radius:12px;display:flex;align-items:center;gap:7px;
   background:var(--panel);border:1px solid var(--line);box-shadow:0 1px 2px rgba(0,0,0,.04);
-  font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;user-select:none;transition:all .15s ease;
+  font-size:13.5px;font-weight:600;color:var(--text);cursor:pointer;user-select:none;transition:all .15s ease;max-width:280px;
 }
+.online-names{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .online-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
 .online-dot-pulse{
   width:8px;height:8px;border-radius:50%;background:var(--completo);
@@ -775,7 +776,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
         <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z" fill="#fff3b0" stroke="#e5c651" stroke-width="1"/></svg>
       </span>
       <div class="online-toggle" id="online-toggle" style="display:none;">
-        <span class="online-dot-pulse"></span><span id="online-count">1</span>
+        <span class="online-dot-pulse"></span><span class="online-names" id="online-count">Utenti online</span>
       </div>
       <div class="online-menu" id="online-menu"></div>
       <div class="log-toggle" id="log-toggle" title="Registro modifiche">
@@ -2275,10 +2276,14 @@ async function setupPresence(){
     const state = channel.presenceState();
     const persone = Object.values(state).map(arr => arr[0]).filter(Boolean);
     document.getElementById('online-toggle').style.display = 'flex';
-    document.getElementById('online-count').textContent = persone.length;
+    const nomi = [...new Set(persone.map(p => String(p.nome || 'Utente').trim()).filter(Boolean))];
+    const etichetta = nomi.length ? nomi.join(' · ') : 'Nessun utente';
+    const toggle = document.getElementById('online-toggle');
+    document.getElementById('online-count').textContent = etichetta;
+    toggle.title = nomi.length ? `Online: ${nomi.join(', ')}` : 'Nessun utente online';
     document.getElementById('online-menu').innerHTML =
       '<div class="online-menu-title">Online ora</div>' +
-      persone.map(p => `<div class="online-person"><span class="online-dot"></span>${p.nome || 'Utente'}</div>`).join('');
+      nomi.map(nome => `<div class="online-person"><span class="online-dot"></span>${escHtml(nome)}</div>`).join('');
   }
 
   channel.on('presence', { event: 'sync' }, renderOnline);
