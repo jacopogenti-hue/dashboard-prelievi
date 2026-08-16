@@ -131,6 +131,17 @@ header{margin-bottom:18px;}
 }
 .share-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,113,227,.35);background:var(--accent-hover);}
 .share-toggle:active{transform:translateY(0);}
+.users-toggle{
+  position:fixed;top:18px;right:455px;z-index:50;height:42px;padding:0 14px;border-radius:12px;
+  display:none;align-items:center;gap:7px;background:var(--panel);color:var(--text);border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(0,0,0,.04);font-size:13.5px;font-weight:650;cursor:pointer;user-select:none;
+  transition:all .15s ease;
+}
+.users-toggle:hover{transform:translateY(-1px);box-shadow:0 3px 8px rgba(0,0,0,.08);}
+.users-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(20,24,31,.38);backdrop-filter:blur(5px)}
+.users-panel{width:min(820px,100%);max-height:min(760px,calc(100vh - 40px));overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-lg);padding:22px}
+.users-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:18px}.users-head h2{font-size:22px;margin:0}.users-head p{margin:4px 0 0;color:var(--text-dim);font-size:13px}.users-close{border:0;background:var(--panel-2);color:var(--text-dim);width:34px;height:34px;border-radius:10px;font-size:20px;cursor:pointer}
+.users-create,.user-row{border:1px solid var(--line);background:var(--panel-2);border-radius:14px;padding:14px;margin-top:10px}.users-create h3{margin:0 0 11px;font-size:14px}.users-grid{display:grid;grid-template-columns:1.25fr 1.25fr 1fr 1fr auto;gap:8px;align-items:center}.users-grid input,.users-grid select{height:38px;min-width:0;border:1px solid var(--line);border-radius:9px;padding:0 9px;background:var(--panel);color:var(--text);font:inherit;font-size:13px}.users-action{height:38px;border:0;border-radius:9px;padding:0 12px;background:var(--accent);color:#fff;font-weight:700;cursor:pointer}.users-action.muted{background:var(--panel);color:var(--text);border:1px solid var(--line)}.users-action.danger{color:#d84a4a}.users-list-title{margin:21px 0 7px;font-size:13px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em}.user-row{display:grid;grid-template-columns:1.1fr 1.2fr .9fr 1fr auto auto;gap:8px}.user-row.inactive{opacity:.55}.users-note,.users-error{font-size:12px;margin:12px 2px 0;color:var(--text-dim)}.users-error{color:#d84a4a;min-height:16px}
 
 .backup-toggle{
   position:fixed;top:18px;right:210px;z-index:50;
@@ -738,12 +749,15 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
   .stats-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:114px;}
   .share-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:162px;width:42px;padding:0;justify-content:center;}
   .share-toggle-label{display:none;}
+  .users-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:354px;width:42px;padding:0;justify-content:center;}
+  .users-toggle span{display:none;}
   .backup-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:210px;}
   .notif-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:258px;}
   .online-toggle{top:auto;bottom:calc(18px + env(safe-area-inset-bottom));right:306px;}
   .online-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:100px;}
   .share-menu{top:auto;bottom:calc(62px + env(safe-area-inset-bottom));right:18px;}
 }
+@media(max-width:680px){.users-grid,.user-row{grid-template-columns:1fr 1fr}.users-grid .users-action,.user-row .users-action{width:100%}.users-panel{padding:16px}}
 @media(hover:none){
   .stat:hover, #dropzone:hover, #empty .big-dz:hover{transform:none;}
 }
@@ -751,6 +765,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
 </head>
 <body>
 <div id="auth-gate" style="min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(145deg,#052c56,#0071e3 58%,#1a91ff)"><form id="login-form" style="width:min(420px,100%);padding:38px;border-radius:22px;background:#fff;box-shadow:0 18px 50px #001a3880"><div style="font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0071e3">Magazzino U005</div><h1 style="margin:10px 0 6px;font-size:30px">Accedi</h1><p style="margin:0 0 26px;color:#6e6e73">Gestionale Prelievi · area riservata</p><label style="display:block;font-size:13px;font-weight:700;margin-bottom:7px">Utente</label><input id="login-username" required autocomplete="username" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="es. jacopo"><label style="display:block;font-size:13px;font-weight:700;margin:18px 0 7px">PIN personale</label><input id="login-pin" required inputmode="numeric" minlength="6" type="password" autocomplete="current-password" style="width:100%;height:46px;border:1px solid #d2d2d7;border-radius:10px;padding:0 12px;font-size:16px" placeholder="••••••••"><button style="width:100%;height:48px;margin-top:24px;border:0;border-radius:10px;background:#0071e3;color:#fff;font-weight:700;font-size:15px">Accedi al gestionale →</button><p id="login-error" style="min-height:18px;margin:14px 0 0;color:#d84a4a;font-size:13px"></p></form></div>
+<div class="users-modal" id="users-modal" aria-hidden="true"><div class="users-panel" role="dialog" aria-modal="true" aria-labelledby="users-title"><div class="users-head"><div><h2 id="users-title">Gestione utenti</h2><p>Account e permessi del gestionale Magazzino U005.</p></div><button class="users-close" id="users-close" aria-label="Chiudi">×</button></div><form class="users-create" id="users-create"><h3>Nuovo utente</h3><div class="users-grid"><input name="display_name" required maxlength="80" placeholder="Nome visualizzato"><input name="username" required pattern="[A-Za-z0-9._-]{3,32}" placeholder="utente (es. mario)"><select name="role"><option value="operatore">Operatore</option><option value="senior">Senior</option><option value="admin">Admin</option></select><input name="pin" required inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" type="password" placeholder="PIN 6-12 cifre"><button class="users-action">Crea</button></div></form><div class="users-list-title">Utenti esistenti</div><div id="users-list"></div><p class="users-error" id="users-error"></p><p class="users-note">Admin: controllo completo · Senior: modifica Prelievi e Produzione · Operatore: modifica solo Produzione.</p></div></div>
 <div class="wrap" id="wrap" style="display:none">
 
   <header>
@@ -776,6 +791,7 @@ footer{margin-top:32px;text-align:center;color:var(--text-dim);font-size:12.5px;
       <div class="stats-toggle" id="stats-toggle" title="Statistiche e andamento">
         <svg viewBox="0 0 24 24" width="22" height="22"><rect x="4" y="12" width="4" height="8" rx="1" fill="#34c759"/><rect x="10" y="7" width="4" height="13" rx="1" fill="#0071e3"/><rect x="16" y="4" width="4" height="16" rx="1" fill="#ff3b30"/></svg>
       </div>
+      <div class="users-toggle" id="users-toggle" title="Gestione utenti"><span>👥</span><span>Utenti</span></div>
       <div class="share-toggle" id="share-toggle">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92 0-1.61-1.31-2.92-2.92-2.92z"/></svg>
         <span class="share-toggle-label">Condividi</span>
@@ -2148,6 +2164,46 @@ if(READONLY){
   // chi ha un link in sola lettura non deve poter generare/condividere il link normale (con permessi di modifica)
   document.getElementById('share-normal').style.display = 'none';
 }
+function escHtml(value){ return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function ruoloOptions(value){ return ['admin','senior','operatore'].map(r => `<option value="${r}" ${r===value?'selected':''}>${r[0].toUpperCase()+r.slice(1)}</option>`).join(''); }
+async function utentiApi(body){
+  const { data, error } = await getSupabase().functions.invoke('manage-users', { body });
+  if(error) throw error;
+  if(data?.error) throw new Error(data.error);
+  return data;
+}
+async function caricaUtenti(){
+  const list = document.getElementById('users-list');
+  const errorBox = document.getElementById('users-error');
+  errorBox.textContent = ''; list.innerHTML = '<div class="users-note">Carico utenti…</div>';
+  try{
+    const { users } = await utentiApi({action:'list'});
+    list.innerHTML = users.map(u => `<form class="user-row ${u.active?'':'inactive'}" data-user-id="${u.id}"><input name="display_name" maxlength="80" value="${escHtml(u.display_name)}"><input class="user-login" value="${escHtml(u.username)}" disabled title="L'utente di accesso non si modifica"><select name="role">${ruoloOptions(u.role)}</select><input name="pin" inputmode="numeric" pattern="[0-9]{6,12}" minlength="6" maxlength="12" type="password" placeholder="Nuovo PIN (facoltativo)"><button class="users-action muted" type="submit">Salva</button><button class="users-action ${u.active?'danger':'muted'}" type="button" data-toggle-active="${u.active?'0':'1'}">${u.active?'Disattiva':'Riattiva'}</button></form>`).join('');
+  }catch(e){ list.innerHTML=''; errorBox.textContent = e.message || 'Impossibile caricare gli utenti.'; }
+}
+function apriUtenti(){ document.getElementById('users-modal').style.display='flex'; document.getElementById('users-modal').setAttribute('aria-hidden','false'); caricaUtenti(); }
+function chiudiUtenti(){ document.getElementById('users-modal').style.display='none'; document.getElementById('users-modal').setAttribute('aria-hidden','true'); }
+document.getElementById('users-toggle').addEventListener('click', apriUtenti);
+document.getElementById('users-close').addEventListener('click', chiudiUtenti);
+document.getElementById('users-modal').addEventListener('click', e => { if(e.target.id==='users-modal') chiudiUtenti(); });
+document.getElementById('users-create').addEventListener('submit', async e => {
+  e.preventDefault(); const form=e.currentTarget, errorBox=document.getElementById('users-error'); errorBox.textContent='';
+  const fd=new FormData(form);
+  try{ await utentiApi({action:'create',display_name:fd.get('display_name'),username:fd.get('username'),role:fd.get('role'),pin:fd.get('pin')}); form.reset(); await caricaUtenti(); }
+  catch(err){ errorBox.textContent=err.message || 'Impossibile creare l’utente.'; }
+});
+document.getElementById('users-list').addEventListener('submit', async e => {
+  if(!e.target.matches('.user-row')) return; e.preventDefault(); const form=e.target, errorBox=document.getElementById('users-error'); errorBox.textContent='';
+  const fd=new FormData(form);
+  try{ await utentiApi({action:'update',id:form.dataset.userId,display_name:fd.get('display_name'),role:fd.get('role'),pin:fd.get('pin')}); await caricaUtenti(); }
+  catch(err){ errorBox.textContent=err.message || 'Impossibile aggiornare l’utente.'; }
+});
+document.getElementById('users-list').addEventListener('click', async e => {
+  const button=e.target.closest('[data-toggle-active]'); if(!button) return;
+  const form=button.closest('.user-row'), errorBox=document.getElementById('users-error'); errorBox.textContent='';
+  try{ await utentiApi({action:'update',id:form.dataset.userId,active:button.dataset.toggleActive==='1'}); await caricaUtenti(); }
+  catch(err){ errorBox.textContent=err.message || 'Impossibile aggiornare l’utente.'; }
+});
 async function avviaSessione(){
   const sb = getSupabase();
   const { data:{ session } } = await sb.auth.getSession();
@@ -2155,6 +2211,7 @@ async function avviaSessione(){
   const { data: profile } = await sb.from('app_profiles').select('username,display_name,role,active').maybeSingle();
   if(!profile || !profile.active) return sb.auth.signOut();
   APP_PROFILE = profile;
+  if(profile.role === 'admin') document.getElementById('users-toggle').style.display = 'flex';
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('wrap').style.display = '';
   if(isOperatore()){
